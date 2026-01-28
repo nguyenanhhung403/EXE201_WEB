@@ -1,16 +1,43 @@
-# React + Vite
+# Synergy - P2P Parking Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Synergy is a Peer-to-Peer (P2P) parking sharing platform that connects homeowners with available parking spaces to drivers looking for affordable and convenient parking spots.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **For Hosts**: Monetize your unused driveway or parking spot. Earn passive income easily.
+- **For Drivers**: Find cheaper, safer, and more convenient parking compared to commercial lots.
+- **Community Focused**: Built on trust and verified user reviews.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React.js (Vite)
+- **Styling**: Modern CSS, Lucide React Icons
+- **Routing**: React Router
+- **State Management**: React Hooks
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for Production**
+   ```bash
+   npm run build
+   ```
+
+## Project Structure
+
+- `/src/components`: Reusable UI components (Header, Footer, Hero, etc.)
+- `/src/pages`: Main application pages (Home, Login, Register, etc.)
+- `/src/services`: API integration services
+
+## Deploy
+
+This project is ready to be deployed on platforms like Vercel or Netlify.

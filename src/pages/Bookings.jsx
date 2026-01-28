@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, MoreVertical, Calendar, User, MapPin, Clock, DollarSign, LogOut, Activity, Users as UsersIcon } from 'lucide-react';
 import api from '../services/api';
@@ -17,27 +17,28 @@ const Bookings = () => {
 
     useEffect(() => {
         fetchBookings(pagination.page);
-    }, []);
+    }, [fetchBookings, pagination.page]);
 
-    const fetchBookings = async (page) => {
+    const fetchBookings = useCallback(async (page) => {
         setLoading(true);
         try {
             const data = await api.admin.getBookings(page, pagination.pageSize);
             console.log('Bookings API Response:', data);
 
             setBookings(data.items || []);
-            setPagination({
+            setPagination(prev => ({
+                ...prev,
                 page: data.page || 1,
                 pageSize: data.pageSize || 20,
                 totalCount: data.totalCount || 0,
                 totalPages: data.totalPages || 0
-            });
+            }));
         } catch (error) {
             console.error('Failed to fetch bookings:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [pagination.pageSize]);
 
     const handleLogout = () => {
         api.auth.clearTokens();

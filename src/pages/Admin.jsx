@@ -73,7 +73,7 @@ const Admin = () => {
         const fetchData = async () => {
             try {
                 // Fetch basic stats
-                const [usersRes, parkingRes, revenueRes, bookingsRes, activitiesRes] = await Promise.all([
+                const [usersRes, , , , activitiesRes] = await Promise.all([
                     api.admin.getUsersSummary(),
                     api.admin.getParkingLotsSummary(),
                     api.admin.getRevenueToday(),
@@ -139,7 +139,7 @@ const Admin = () => {
                 ? { month: '2-digit', day: '2-digit' }
                 : { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
             return new Date(dateString).toLocaleString('vi-VN', options);
-        } catch (error) {
+        } catch {
             return 'Invalid Date';
         }
     };

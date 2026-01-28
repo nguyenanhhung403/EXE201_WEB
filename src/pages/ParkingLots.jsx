@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, MoreVertical, MapPin, Car, DollarSign, Plus, LogOut, Activity, Users as UsersIcon, Calendar } from 'lucide-react';
 import api from '../services/api';
@@ -17,27 +17,28 @@ const ParkingLots = () => {
 
     useEffect(() => {
         fetchParkingLots(pagination.page);
-    }, []);
+    }, [fetchParkingLots, pagination.page]);
 
-    const fetchParkingLots = async (page) => {
+    const fetchParkingLots = useCallback(async (page) => {
         setLoading(true);
         try {
             const data = await api.admin.getParkingLots(page, pagination.pageSize);
             console.log('Parking Lots API Response:', data);
 
             setParkingLots(data.items || []);
-            setPagination({
+            setPagination(prev => ({
+                ...prev,
                 page: data.page || 1,
                 pageSize: data.pageSize || 20,
                 totalCount: data.totalCount || 0,
                 totalPages: data.totalPages || 0
-            });
+            }));
         } catch (error) {
             console.error('Failed to fetch parking lots:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [pagination.pageSize]);
 
     const handleLogout = () => {
         api.auth.clearTokens();
