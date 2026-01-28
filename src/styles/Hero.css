@@ -1,0 +1,339 @@
+.hero-section {
+    position: relative;
+    padding: 180px 0 120px;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2d1b69 0%, #6d28d9 50%, #7c3aed 100%);
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 80px;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero-text h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -1px;
+}
+
+.highlight {
+    background: linear-gradient(135deg, #60a5fa, #a78bfa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.hero-text p {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 4rem;
+}
+
+.icon-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stats {
+    display: flex;
+    gap: 50px;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-item h3 {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+    color: white;
+}
+
+.stat-item span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+/* Image/Mockup Styling */
+.hero-image {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-mockup {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+.mobile-frame {
+    width: 320px;
+    height: 650px;
+    background: #1a1a1a;
+    border-radius: 45px;
+    padding: 12px;
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 2px #2a2a2a,
+        0 0 0 8px #1a1a1a,
+        inset 0 0 0 2px #3a3a3a;
+    position: relative;
+}
+
+.mobile-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-notch::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+}
+
+.mobile-screen {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 35px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* For importing actual app screenshots */
+.app-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Placeholder content (remove when using real screenshot) */
+.placeholder-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 50px 20px 20px;
+}
+
+.placeholder-map {
+    width: 100%;
+    height: 60%;
+    background:
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.map-marker {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #ec4899;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.6);
+    animation: pulse-marker 2s ease-in-out infinite;
+}
+
+.marker-1 {
+    top: 25%;
+    left: 35%;
+    animation-delay: 0s;
+}
+
+.marker-2 {
+    top: 50%;
+    left: 60%;
+    background: #06b6d4;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.6);
+    animation-delay: 0.5s;
+}
+
+.marker-3 {
+    top: 65%;
+    left: 40%;
+    background: #10b981;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.6);
+    animation-delay: 1s;
+}
+
+@keyframes pulse-marker {
+
+    0%,
+    100% {
+        transform: rotate(-45deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(-45deg) scale(1.1);
+    }
+}
+
+.placeholder-card {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    width: 50%;
+    height: 20px;
+    background: linear-gradient(90deg, #e0e0e0, #f0f0f0);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.card-body .card-line {
+    height: 12px;
+    background: linear-gradient(90deg, #f0f0f0, #e0e0e0);
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.card-body .card-line.short {
+    width: 70%;
+}
+
+.mobile-bottom-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 5px;
+    background: #333;
+    border-radius: 3px;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+}
+
+.glow-effect {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 968px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 50px;
+    }
+
+    .hero-text h1 {
+        font-size: 3rem;
+    }
+
+    .hero-text p {
+        margin: 0 auto 2.5rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .stats {
+        justify-content: center;
+    }
+
+    .phone-mockup {
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-text h1 {
+        font-size: 2.25rem;
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+    }
+
+    .stats {
+        gap: 30px;
+    }
+
+    .stat-item h3 {
+        font-size: 1.5rem;
+    }
+}

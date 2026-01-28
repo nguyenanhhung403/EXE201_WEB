@@ -1,0 +1,191 @@
+.support-page {
+    min-height: 100vh;
+    padding: 120px 0 80px;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    background-attachment: fixed;
+    color: var(--text-light);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--text-light);
+}
+
+.page-title {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #a5b4fc);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.last-updated {
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    font-size: 0.9rem;
+}
+
+/* Help Center Styles */
+.help-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.help-section {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+}
+
+.help-section h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: white;
+}
+
+.faq-item,
+.tutorial-item {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.faq-item:last-child,
+.tutorial-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.faq-item h3,
+.tutorial-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent-color);
+}
+
+.faq-item p,
+.tutorial-item p {
+    color: var(--text-dim);
+    line-height: 1.7;
+}
+
+.faq-item ul,
+.tutorial-item ul {
+    margin-top: 0.75rem;
+    padding-left: 1.5rem;
+}
+
+.faq-item li,
+.tutorial-item li {
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    list-style: disc;
+}
+
+.contact-info {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-info p {
+    margin-bottom: 0.75rem;
+    color: var(--text-dim);
+}
+
+.contact-info strong {
+    color: white;
+    margin-right: 0.5rem;
+}
+
+/* Terms & Privacy Styles */
+.terms-content,
+.privacy-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 3rem;
+}
+
+.terms-content section,
+.privacy-content section {
+    margin-bottom: 2.5rem;
+}
+
+.terms-content section:last-child,
+.privacy-content section:last-child {
+    margin-bottom: 0;
+}
+
+.terms-content h2,
+.privacy-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.terms-content h3,
+.privacy-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    color: var(--accent-color);
+}
+
+.terms-content p,
+.privacy-content p {
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.terms-content ul,
+.privacy-content ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.terms-content li,
+.privacy-content li {
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+    list-style: disc;
+}
+
+.terms-content strong,
+.privacy-content strong {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .support-page {
+        padding: 100px 0 60px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .help-section,
+    .terms-content,
+    .privacy-content {
+        padding: 1.5rem;
+    }
+}

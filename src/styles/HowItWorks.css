@@ -1,0 +1,210 @@
+.how-it-works-section {
+    padding: 6rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.how-it-works-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.4;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.section-header .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.section-header .section-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.roles-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+.role-column {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.role-column:hover {
+    transform: translateY(-8px);
+}
+
+.role-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-badge.host {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.role-badge.driver {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.role-header h3 {
+    font-size: 1.75rem;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step-card {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.step-card:hover {
+    background: white;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateX(8px);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover .step-icon {
+    transform: scale(1.1);
+}
+
+.host-color {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+}
+
+.driver-color {
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+    color: #f5576c;
+}
+
+.step-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.step-content p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .roles-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .how-it-works-section {
+        padding: 4rem 0;
+    }
+
+    .section-header .section-title {
+        font-size: 2rem;
+    }
+
+    .role-column {
+        padding: 2rem;
+    }
+
+    .step-card {
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+    }
+
+    .step-icon {
+        grid-column: 1 / 2;
+        grid-row: 2;
+    }
+
+    .step-number {
+        grid-column: 1 / 2;
+        grid-row: 1;
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .step-content {
+        grid-column: 2 / 3;
+        grid-row: 1 / 3;
+    }
+}
