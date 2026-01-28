@@ -153,6 +153,12 @@ const api = {
                 { id: 3, name: 'Sân bay Tân Sơn Nhất', address: 'Tân Bình, TP.HCM', revenue: 62000000, bookings: 300, rating: 4.5 },
                 { id: 4, name: 'Aeon Mall Tân Phú', address: 'Tân Phú, TP.HCM', revenue: 28000000, bookings: 95, rating: 4.7 },
             ]), 700));
+        },
+        getUserDistribution: async () => {
+            return new Promise(resolve => setTimeout(() => resolve([
+                { name: 'Driver', value: 850 },
+                { name: 'Host', value: 150 },
+            ]), 600));
         }
     }
 };

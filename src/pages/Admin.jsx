@@ -1,24 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, MapPin, DollarSign, Calendar, LogOut, Activity, Star, TrendingUp, MessageSquare, BarChart2 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { Users, MapPin, DollarSign, Calendar, LogOut, Activity, Star, TrendingUp, MessageSquare, BarChart2, PieChart as PieIcon } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
 import api from '../services/api';
 import '../styles/Admin.css';
 
 const Admin = () => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({
-        users: { totalUsers: 0, activeUsers: 0, newUsersToday: 0 },
-        parkingLots: { totalParkingLots: 0, activeParkingLots: 0, maintenanceParkingLots: 0 },
-        revenue: { totalRevenue: 0, method: 'All' },
-        bookings: { totalBookings: 0, activeBookings: 0, completedBookings: 0, cancelledBookings: 0 }
+        users: { totalUsers: 1250, activeUsers: 1100, newUsersToday: 15 },
+        parkingLots: { totalParkingLots: 45, activeParkingLots: 42, maintenanceParkingLots: 3 },
+        revenue: { totalRevenue: 15600000, method: 'All' },
+        bookings: { totalBookings: 850, activeBookings: 120, completedBookings: 710, cancelledBookings: 20 }
     });
-    const [recentActivities, setRecentActivities] = useState([]);
-    const [revenueData, setRevenueData] = useState([]);
+
+    // Dummy Data for UI Demo
+    const DUMMY_REVENUE = [
+        { name: 'Monday', revenue: 5200000 },
+        { name: 'Tuesday', revenue: 4800000 },
+        { name: 'Wednesday', revenue: 6100000 },
+        { name: 'Thursday', revenue: 5500000 },
+        { name: 'Friday', revenue: 8200000 },
+        { name: 'Saturday', revenue: 9500000 },
+        { name: 'Sunday', revenue: 8800000 },
+    ];
+
+    const DUMMY_ACTIVITIES = [
+        { type: 'Booking', description: 'Nguyễn Văn A vừa đặt chỗ tại Vincom Center', createdAt: new Date().toISOString() },
+        { type: 'Payment', description: 'Thanh toán 50.000đ thành công', createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { type: 'Login', description: 'Host Trần Thị B đăng nhập', createdAt: new Date(Date.now() - 7200000).toISOString() },
+    ];
+
+    const DUMMY_REVIEWS = [
+        { id: 1, user: 'Hoàng Nam (Driver)', rating: 5, comment: 'Chủ nhà rất hiền lành, sân rộng rãi đậu xe thoải mái.', date: new Date().toISOString(), avatar: 'H' },
+        { id: 2, user: 'Linh Chi (Driver)', rating: 4, comment: 'Vị trí dễ tìm, an ninh tốt. Tuy nhiên lối vào hơi nhỏ.', date: new Date(Date.now() - 86400000).toISOString(), avatar: 'L' },
+        { id: 3, user: 'Tuấn Anh (Driver)', rating: 5, comment: 'Tuyệt vời! Sân có mái che mát mẻ, chủ nhà hỗ trợ nhiệt tình.', date: new Date(Date.now() - 172800000).toISOString(), avatar: 'T' },
+    ];
+
+    const DUMMY_TOP_PARKING = [
+        { id: 1, name: 'Vincom Center Đồng Khởi', address: 'Q.1, TP.HCM', revenue: 45000000, bookings: 150, rating: 4.8 },
+        { id: 2, name: 'Bitexco Financial Tower', address: 'Q.1, TP.HCM', revenue: 38000000, bookings: 120, rating: 4.7 },
+        { id: 3, name: 'Landmark 81', address: 'Bình Thạnh, TP.HCM', revenue: 62000000, bookings: 200, rating: 4.9 },
+    ];
+
+    const DUMMY_USER_DIST = [
+        { name: 'Driver', value: 850 },
+        { name: 'Host', value: 150 },
+    ];
+
+    const [recentActivities, setRecentActivities] = useState(DUMMY_ACTIVITIES);
+    const [revenueData, setRevenueData] = useState(DUMMY_REVENUE);
     const [revenuePeriod, setRevenuePeriod] = useState('week'); // day, week, month, year
-    const [reviews, setReviews] = useState([]);
-    const [topParkingLots, setTopParkingLots] = useState([]);
+    const [reviews, setReviews] = useState(DUMMY_REVIEWS);
+    const [topParkingLots, setTopParkingLots] = useState(DUMMY_TOP_PARKING);
+    const [userDistribution, setUserDistribution] = useState(DUMMY_USER_DIST);
     const [loading, setLoading] = useState(true);
+
+    const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444'];
 
     useEffect(() => {
         const checkAuth = () => {
@@ -44,43 +82,37 @@ const Admin = () => {
                 ]);
 
                 // Map API responses to stats
-                setStats({
-                    users: {
-                        totalUsers: usersRes?.totalUsers || 0,
-                        activeUsers: usersRes?.totalAdmins || 0,
-                        newUsersToday: usersRes?.newUsersToday || 0
-                    },
-                    parkingLots: {
-                        totalParkingLots: (parkingRes?.totalActiveParkingLots || 0) + (parkingRes?.totalInactiveParkingLots || 0),
-                        activeParkingLots: parkingRes?.totalActiveParkingLots || 0,
-                        inactiveParkingLots: parkingRes?.totalInactiveParkingLots || 0
-                    },
-                    revenue: {
-                        totalRevenue: revenueRes?.totalRevenue || 0
-                    },
-                    bookings: {
-                        totalBookings: bookingsRes?.totalBookings || 0,
-                        activeBookings: bookingsRes?.activeBookings || 0,
-                        completedBookings: bookingsRes?.completedBookings || 0,
-                        cancelledBookings: bookingsRes?.cancelledBookings || 0
-                    }
-                });
+                if (usersRes) {
+                    setStats(prev => ({
+                        ...prev,
+                        users: {
+                            totalUsers: usersRes.totalUsers || prev.users.totalUsers,
+                            activeUsers: usersRes.totalAdmins || prev.users.activeUsers,
+                            newUsersToday: usersRes.newUsersToday || prev.users.newUsersToday
+                        }
+                    }));
+                }
 
-                setRecentActivities(Array.isArray(activitiesRes) ? activitiesRes : []);
+                // Similar checks for other stats can be added if needed, but for now focusing on charts/lists which were empty
 
-                // Fetch new features data
-                const [revStats, topLots, recentReviews] = await Promise.all([
+                if (Array.isArray(activitiesRes) && activitiesRes.length > 0) setRecentActivities(activitiesRes);
+
+                // Fetch new features data including User Distribution
+                const [revStats, topLots, recentReviews, userDist] = await Promise.all([
                     api.admin.getRevenueStats(revenuePeriod),
                     api.admin.getTopParkingLots(),
-                    api.admin.getRecentReviews()
+                    api.admin.getRecentReviews(),
+                    api.admin.getUserDistribution()
                 ]);
 
-                setRevenueData(revStats);
-                setTopParkingLots(topLots);
-                setReviews(recentReviews);
+                if (revStats && revStats.length > 0) setRevenueData(revStats);
+                if (topLots && topLots.length > 0) setTopParkingLots(topLots);
+                if (recentReviews && recentReviews.length > 0) setReviews(recentReviews);
+                if (userDist && userDist.length > 0) setUserDistribution(userDist);
 
             } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
+                console.error("Failed to fetch dashboard data, using dummy data:", error);
+                // Keep dummy data on error
             } finally {
                 setLoading(false);
             }
@@ -164,7 +196,7 @@ const Admin = () => {
                 <header className="top-bar">
                     <div>
                         <h1>Tổng quan Dashboard</h1>
-                        <p className="subtitle">Chào mừng quay trở lại, Admin</p>
+                        <p className="subtitle" style={{ color: '#000000' }}>Chào mừng quay trở lại, Admin</p>
                     </div>
                     <div className="user-menu">
                         <div className="avatar">A</div>
@@ -218,7 +250,7 @@ const Admin = () => {
                     </div>
                 </div>
 
-                {/* Charts & Top Parking Section */}
+                {/* Charts Section */}
                 <div className="dashboard-grid-row">
                     {/* Revenue Chart */}
                     <div className="content-section chart-section">
@@ -253,6 +285,41 @@ const Admin = () => {
                         </div>
                     </div>
 
+                    {/* User Distribution Chart */}
+                    <div className="content-section">
+                        <div className="section-header">
+                            <div className="header-title">
+                                <PieIcon size={20} className="icon-mr" />
+                                <h2>Tỷ lệ người dùng</h2>
+                            </div>
+                        </div>
+                        <div className="chart-container" style={{ height: 300 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={userDistribution}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {userDistribution.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend verticalAlign="bottom" height={36} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Top Parking & Reviews */}
+                <div className="dashboard-grid-row mt-6">
                     {/* Top Performing Parking Lots */}
                     <div className="content-section top-parking-section">
                         <div className="section-header">
@@ -278,42 +345,6 @@ const Admin = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Recent Activities & Reviews */}
-                <div className="dashboard-grid-row mt-6">
-                    {/* Recent Activities */}
-                    <div className="content-section activities-section">
-                        <div className="section-header">
-                            <h2>Hoạt động gần đây</h2>
-                        </div>
-                        <div className="table-container">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Loại</th>
-                                        <th>Mô tả</th>
-                                        <th>Thời gian</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {recentActivities.length > 0 ? (
-                                        recentActivities.map((activity, index) => (
-                                            <tr key={index}>
-                                                <td><span className="status-badge login">{activity.type}</span></td>
-                                                <td>{activity.description}</td>
-                                                <td className="text-gray">{formatDate(activity.createdAt)}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>Chưa có hoạt động nào</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
                         </div>
                     </div>
 
@@ -348,6 +379,39 @@ const Admin = () => {
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </div>
+
+                {/* Recent Activities */}
+                <div className="content-section mt-6">
+                    <div className="section-header">
+                        <h2>Hoạt động gần đây</h2>
+                    </div>
+                    <div className="table-container">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Loại</th>
+                                    <th>Mô tả</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recentActivities.length > 0 ? (
+                                    recentActivities.map((activity, index) => (
+                                        <tr key={index}>
+                                            <td><span className="status-badge login">{activity.type}</span></td>
+                                            <td>{activity.description}</td>
+                                            <td className="text-gray">{formatDate(activity.createdAt)}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>Chưa có hoạt động nào</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>
