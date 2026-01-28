@@ -52,9 +52,9 @@ const Login = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <img src={logo} alt="P2P Parking" className="auth-logo" />
+                    <img src={logo} alt="Synergy" className="auth-logo" />
                     <h1>Chào mừng trở lại!</h1>
-                    <p>Đăng nhập để tiếp tục với P2P Parking</p>
+                    <p>Đăng nhập để tiếp tục với Synergy</p>
                 </div>
 
                 {error && (

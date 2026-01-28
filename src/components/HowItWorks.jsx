@@ -44,7 +44,7 @@ const HowItWorks = () => {
             <div className="container">
                 <div className="section-header">
                     <h2 className="section-title">Làm sao hoạt động?</h2>
-                    <p className="section-subtitle">P2P Parking kết nối chủ nhà và tài xế trong 3 bước đơn giản</p>
+                    <p className="section-subtitle">Synergy kết nối chủ nhà và tài xế trong 3 bước đơn giản</p>
                 </div>
 
                 <div className="roles-container">

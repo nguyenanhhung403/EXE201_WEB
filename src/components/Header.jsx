@@ -20,8 +20,8 @@ const Header = () => {
         <header className={`header ${isScrolled ? 'scrolled' : ''} `}>
             <div className="container header-content">
                 <div className="logo">
-                    <img src={logo} alt="P2P Parking Logo" className="logo-img" />
-                    <span>P2P Parking</span>
+                    <img src={logo} alt="Synergy Logo" className="logo-img" />
+                    <span>Synergy</span>
                 </div>
 
                 <nav className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>

@@ -51,7 +51,7 @@ const Testimonials = () => {
     return (
         <section id="testimonials" className="testimonials-section">
             <div className="container">
-                <h2 className="testimonials-title">Cộng đồng P2P Parking nói gì?</h2>
+                <h2 className="testimonials-title">Cộng đồng Synergy nói gì?</h2>
                 <p className="testimonials-subtitle">Hơn 5,000+ Hosts và Drivers tin tưởng sử dụng mỗi ngày</p>
 
                 <div className="testimonials-grid">
