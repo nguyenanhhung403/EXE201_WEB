@@ -106,7 +106,7 @@ const Register = () => {
             <div className="auth-container">
                 <div className="auth-card">
                     <div className="auth-header">
-                        <img src={logo} alt="P2P Parking" className="auth-logo" />
+                        <img src={logo} alt="Synergy" className="auth-logo" />
                         <h1>Xác thực OTP</h1>
                         <p>Mã OTP đã được gửi đến {otpSentTo}</p>
                     </div>
@@ -170,9 +170,9 @@ const Register = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <img src={logo} alt="P2P Parking" className="auth-logo" />
+                    <img src={logo} alt="Synergy" className="auth-logo" />
                     <h1>Tạo tài khoản mới</h1>
-                    <p>Bắt đầu hành trình với P2P Parking</p>
+                    <p>Bắt đầu hành trình với Synergy</p>
                 </div>
 
                 {error && (

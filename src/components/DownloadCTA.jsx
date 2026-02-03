@@ -15,7 +15,7 @@ const DownloadCTA = () => {
                             </span>
                         </div>
                         <h2 className="download-title">
-                            Tải P2P Parking<br />
+                            Tải Synergy<br />
                             <span className="gradient-text">Bắt đầu kiếm tiền ngay!</span>
                         </h2>
                         <p className="download-description">

@@ -10,8 +10,8 @@ const Footer = () => {
             <div className="container footer-content">
                 <div className="footer-section">
                     <div className="footer-logo">
-                        <img src={logo} alt="P2P Parking Logo" className="footer-logo-img" />
-                        <h3>P2P Parking</h3>
+                        <img src={logo} alt="Synergy Logo" className="footer-logo-img" />
+                        <h3>Synergy</h3>
                     </div>
                     <p>Nền tảng chia sẻ chỗ đỗ xe Peer-to-Peer đầu tiên tại Việt Nam.</p>
                 </div>
@@ -47,7 +47,7 @@ const Footer = () => {
 
             <div className="footer-bottom">
                 <div className="container">
-                    <p>&copy; 2026 P2P Parking. All rights reserved.</p>
+                    <p>&copy; 2026 Synergy. All rights reserved.</p>
                 </div>
             </div>
         </footer>

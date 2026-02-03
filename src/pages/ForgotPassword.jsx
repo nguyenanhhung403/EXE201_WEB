@@ -90,7 +90,7 @@ const ForgotPassword = () => {
             <div className="auth-container">
                 <div className="auth-card">
                     <div className="auth-header">
-                        <img src={logo} alt="P2P Parking" className="auth-logo" />
+                        <img src={logo} alt="Synergy" className="auth-logo" />
                         <h1>Đặt lại mật khẩu</h1>
                         <p>Nhập mã OTP và mật khẩu mới</p>
                     </div>
@@ -190,7 +190,7 @@ const ForgotPassword = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <div className="auth-header">
-                    <img src={logo} alt="P2P Parking" className="auth-logo" />
+                    <img src={logo} alt="Synergy" className="auth-logo" />
                     <h1>Quên mật khẩu?</h1>
                     <p>Nhập email hoặc số điện thoại để nhận mã OTP</p>
                 </div>

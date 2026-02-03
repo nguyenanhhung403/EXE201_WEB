@@ -14,7 +14,7 @@ const Hero = () => {
                         <span className="highlight">Kiếm tiền<br />thụ động</span>
                     </h1>
                     <p>
-                        Nền tảng P2P Parking kết nối chủ nhà có sân trống với tài xế cần chỗ đỗ. Chủ nhà kiếm thêm thu nhập, tài xế tiết kiệm chi phí. Đơn giản, an toàn, cộng đồng!
+                        Nền tảng Synergy kết nối chủ nhà có sân trống với tài xế cần chỗ đỗ. Chủ nhà kiếm thêm thu nhập, tài xế tiết kiệm chi phí. Đơn giản, an toàn, cộng đồng!
                     </p>
                     <div className="hero-buttons">
                         <button className="btn btn-primary icon-btn">
@@ -27,7 +27,7 @@ const Hero = () => {
                     <div className="stats">
                         <div className="stat-item">
                             <h3>100+</h3>
-                            <span>Chỗ đỗ P2P</span>
+                            <span>Chỗ đỗ Synergy</span>
                         </div>
                         <div className="stat-item">
                             <h3>5k+</h3>

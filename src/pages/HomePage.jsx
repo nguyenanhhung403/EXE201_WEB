@@ -12,8 +12,8 @@ const HomePage = () => {
     return (
         <div className="app">
             <SEO
-                title="P2P Parking - Chia sẻ chỗ đỗ xe P2P | Cho thuê sân nhà kiếm tiền thụ động"
-                description="Biến sân nhà thành nguồn thu thụ động! Chủ nhà cho thuê chỗ đỗ, tài xế tìm chỗ đỗ giá rẻ. Nền tảng P2P Parking kết nối cộng đồng chia sẻ chỗ đỗ xe tại Việt Nam."
+                title="Synergy - Chia sẻ chỗ đỗ xe P2P | Cho thuê sân nhà kiếm tiền thụ động"
+                description="Biến sân nhà thành nguồn thu thụ động! Chủ nhà cho thuê chỗ đỗ, tài xế tìm chỗ đỗ giá rẻ. Nền tảng Synergy kết nối cộng đồng chia sẻ chỗ đỗ xe tại Việt Nam."
             />
             <Header />
             <main>

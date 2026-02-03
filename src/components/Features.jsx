@@ -29,7 +29,7 @@ const Features = () => {
     return (
         <section id="features" className="features-section">
             <div className="container">
-                <h2 className="section-title">Tại sao chọn P2P Parking?</h2>
+                <h2 className="section-title">Tại sao chọn Synergy?</h2>
                 <p className="section-subtitle">Nền tảng chia sẻ chỗ đỗ xe đầu tiên tại Việt Nam - Kết nối cộng đồng, chia sẻ lợi ích</p>
 
                 {/* Optional: Layout with image side-by-side or top/bottom */}
