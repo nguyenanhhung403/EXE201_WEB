@@ -89,8 +89,9 @@ const api = {
             const response = await axiosInstance.get('/admin/dashboard/bookings-summary');
             return response.data.data || response.data;
         },
-        getUsers: async (page = 1, pageSize = 20) => {
-            const response = await axiosInstance.get(`/admin/users?page=${page}&pageSize=${pageSize}`);
+        getUsers: async (page = 1, pageSize = 20, filters = {}) => {
+            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const response = await axiosInstance.get(`/admin/users?${params}`);
             return response.data.data || response.data;
         },
         getParkingLots: async (page = 1, pageSize = 20) => {
@@ -100,6 +101,15 @@ const api = {
         updateUser: async (id, userData) => {
             const response = await axiosInstance.put(`/admin/users/${id}`, userData);
             return response.data;
+        },
+        // New summary methods
+        getTotalTransactions: async () => {
+            const response = await axiosInstance.get('/admin/transactions?pageSize=1');
+            return response.data.data?.totalCount || response.data?.totalCount || 0;
+        },
+        getTotalReviews: async () => {
+            const response = await axiosInstance.get('/admin/reviews?pageSize=1');
+            return response.data.data?.totalCount || response.data?.totalCount || 0;
         },
         getBookings: async (page = 1, pageSize = 20, filters = {}) => {
             const params = new URLSearchParams({ page, pageSize, ...filters });
@@ -176,6 +186,37 @@ const api = {
                 rejectReason
             });
             return response.data;
+        },
+        // Reviews Management
+        getAllReviews: async (page = 1, pageSize = 20, filters = {}) => {
+            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const response = await axiosInstance.get(`/admin/reviews?${params}`);
+            return response.data.data || response.data;
+        },
+        deleteReview: async (id) => {
+            const response = await axiosInstance.delete(`/admin/reviews/${id}`);
+            return response.data;
+        },
+        // Transactions Management
+        getTransactions: async (page = 1, pageSize = 20, filters = {}) => {
+            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const response = await axiosInstance.get(`/admin/transactions?${params}`);
+            return response.data.data || response.data;
+        },
+        processRefund: async (id, reason) => {
+            const response = await axiosInstance.post(`/admin/transactions/${id}/refund`, { reason });
+            return response.data;
+        },
+        // Reports
+        getRevenueReport: async (fromDate, toDate, period = 'monthly') => {
+            const params = new URLSearchParams({ fromDate, toDate, period });
+            const response = await axiosInstance.get(`/admin/reports/revenue?${params}`);
+            return response.data.data || response.data;
+        },
+        getBookingsReport: async (fromDate, toDate) => {
+            const params = new URLSearchParams({ fromDate, toDate });
+            const response = await axiosInstance.get(`/admin/reports/bookings?${params}`);
+            return response.data.data || response.data;
         }
     }
 };
