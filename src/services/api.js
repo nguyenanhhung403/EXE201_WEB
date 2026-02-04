@@ -159,6 +159,23 @@ const api = {
                 { name: 'Driver', value: 850 },
                 { name: 'Host', value: 150 },
             ]), 600));
+        },
+        // Owner Upgrade Requests Management
+        getOwnerUpgradeRequests: async (status = '', page = 1, pageSize = 50) => {
+            const params = new URLSearchParams({ page, pageSize });
+            if (status) params.append('status', status);
+            const response = await axiosInstance.get(`/admin/owners/upgrade-requests?${params}`);
+            return response.data.data || response.data;
+        },
+        approveOwnerRequest: async (requestId) => {
+            const response = await axiosInstance.post(`/admin/owners/upgrade-requests/${requestId}/approve`);
+            return response.data;
+        },
+        rejectOwnerRequest: async (requestId, rejectReason) => {
+            const response = await axiosInstance.post(`/admin/owners/upgrade-requests/${requestId}/reject`, {
+                rejectReason
+            });
+            return response.data;
         }
     }
 };

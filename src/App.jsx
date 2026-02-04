@@ -18,6 +18,7 @@ import Bookings from './pages/Bookings';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import OwnerRequestsManagement from './pages/OwnerRequestsManagement';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/parking-lots" element={<ParkingLots />} />
           <Route path="/admin/bookings" element={<Bookings />} />
+          <Route path="/admin/owner-requests" element={<OwnerRequestsManagement />} />
         </Routes>
       </Router>
     </HelmetProvider>
