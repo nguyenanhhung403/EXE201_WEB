@@ -116,19 +116,21 @@ const Transactions = () => {
                             <tbody>
                                 {transactions.length > 0 ? (
                                     transactions.map(tx => (
-                                        <tr key={tx.id}>
-                                            <td className="font-mono">{tx.id?.substring(0, 8) || 'N/A'}...</td>
+                                        <tr key={tx.paymentId}>
+                                            <td className="font-mono" title={tx.paymentId}>
+                                                {tx.transactionRef || tx.paymentId?.substring(0, 8) || 'N/A'}
+                                            </td>
                                             <td>{tx.userName || 'N/A'}</td>
                                             <td style={{ fontWeight: 600 }}>{tx.amount?.toLocaleString()} đ</td>
                                             <td>{tx.paymentMethod}</td>
                                             <td className="text-gray">{new Date(tx.createdAt).toLocaleString('vi-VN')}</td>
-                                            <td>{getStatusBadge(tx.status)}</td>
+                                            <td>{getStatusBadge(tx.paymentStatus)}</td>
                                             <td>
-                                                {tx.status === 'Completed' && (
+                                                {tx.paymentStatus === 'Completed' && (
                                                     <button
                                                         className="action-btn"
                                                         style={{ background: '#f3f4f6', color: '#374151' }}
-                                                        onClick={() => setRefundModal({ show: true, transactionId: tx.id })}
+                                                        onClick={() => setRefundModal({ show: true, transactionId: tx.paymentId })}
                                                     >
                                                         <RefreshCw size={14} /> Hoàn tiền
                                                     </button>
