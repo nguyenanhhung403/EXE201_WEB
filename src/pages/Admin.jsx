@@ -179,6 +179,10 @@ const Admin = () => {
                         <Calendar size={20} />
                         <span>Đặt chỗ</span>
                     </a>
+                    <a href="/admin/owner-requests" className="nav-item">
+                        <Activity size={20} />
+                        <span>Yêu cầu làm chủ bãi</span>
+                    </a>
                     <a href="/admin/reviews" className="nav-item">
                         <MessageSquare size={20} />
                         <span>Đánh giá</span>

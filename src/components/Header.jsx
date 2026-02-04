@@ -29,8 +29,7 @@ const Header = () => {
                     <a href="#features" onClick={() => setIsMobileMenuOpen(false)}>Tính năng</a>
                     <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)}>Cách hoạt động</a>
                     <a href="#download" onClick={() => setIsMobileMenuOpen(false)}>Tải App</a>
-                    {/* <Link to="/login" className="login-btn" onClick={() => setIsMobileMenuOpen(false)}>Đăng nhập</Link>
-                    <Link to="/register" className="register-btn" onClick={() => setIsMobileMenuOpen(false)}>Đăng ký</Link> */}
+                    <Link to="/login" className="login-btn" onClick={() => setIsMobileMenuOpen(false)}>Đăng nhập</Link>
                 </nav>
 
                 <div className="header-actions">
