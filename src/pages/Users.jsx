@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, MoreVertical, Shield, User, Phone, Mail, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import api from '../services/api';
+import { formatDate } from '../utils/helpers';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -70,10 +71,7 @@ const Users = () => {
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('vi-VN');
-    };
+    const formatDateLocal = (dateString) => (dateString ? formatDate(dateString) : 'N/A');
 
     return (
         <AdminLayout title="Quản lý Người dùng" subtitle="Danh sách tất cả người dùng hệ thống">
@@ -136,7 +134,7 @@ const Users = () => {
                                                         {user.isActive ? 'Active' : 'Inactive'}
                                                     </span>
                                                 </td>
-                                                <td>{formatDate(user.createdAt)}</td>
+                                                <td>{formatDateLocal(user.createdAt)}</td>
                                                 <td>
                                                     <button
                                                         onClick={() => handleEditClick(user)}

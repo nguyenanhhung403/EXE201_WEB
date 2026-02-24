@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, XCircle, UserCheck } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import api from '../services/api';
+import { formatDateTime } from '../utils/helpers';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
+
+/**
+ * Quản lý yêu cầu làm chủ bãi xe - Full CRUD (Read + Update)
+ *
+ * Endpoints (Backend):
+ * - GET  /api/admin/owners/upgrade-requests?status=&page=1&pageSize=50  (Read - list)
+ * - POST /api/admin/owners/upgrade-requests/{id}/approve                 (Update - duyệt)
+ * - POST /api/admin/owners/upgrade-requests/{id}/reject  body: { reason } (Update - từ chối)
+ *
+ * Status: PendingApproval, PendingPayment, Pending, Approved, Rejected
+ */
+const STATUS_ALL = '';
+const STATUS_PENDING_APPROVAL = 'PendingApproval';
+const STATUS_APPROVED = 'Approved';
+const STATUS_REJECTED = 'Rejected';
 
 const OwnerRequestsManagement = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [requests, setRequests] = useState([]);
-    const [statusFilter, setStatusFilter] = useState('Pending');
+    const [statusFilter, setStatusFilter] = useState(STATUS_PENDING_APPROVAL);
     const [showRejectModal, setShowRejectModal] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [rejectReason, setRejectReason] = useState('');
@@ -34,12 +50,15 @@ const OwnerRequestsManagement = () => {
         try {
             const response = await api.admin.getOwnerUpgradeRequests(statusFilter, 1, 50);
             if (response) {
-                // Handle PagedResult (response.items) or standard List (response.data or response)
-                const data = response.items || response.data || (Array.isArray(response) ? response : []);
-                setRequests(data);
+                // Backend returns PagedResult: { items, page, pageSize, totalCount }
+                const data = response.items ?? response.data ?? (Array.isArray(response) ? response : []);
+                setRequests(Array.isArray(data) ? data : []);
+            } else {
+                setRequests([]);
             }
         } catch (error) {
             console.error('Failed to fetch owner requests:', error);
+            setRequests([]);
         } finally {
             setLoading(false);
         }
@@ -55,7 +74,8 @@ const OwnerRequestsManagement = () => {
             fetchRequests();
         } catch (error) {
             console.error('Approve error:', error);
-            alert('Có lỗi xảy ra khi duyệt yêu cầu');
+            const msg = error.response?.data?.message ?? error.message ?? 'Có lỗi xảy ra khi duyệt yêu cầu';
+            alert(msg);
         } finally {
             setActionLoading(false);
         }
@@ -77,41 +97,38 @@ const OwnerRequestsManagement = () => {
             fetchRequests();
         } catch (error) {
             console.error('Reject error:', error);
-            alert('Có lỗi xảy ra khi từ chối yêu cầu');
+            const msg = error.response?.data?.message ?? error.message ?? 'Có lỗi xảy ra khi từ chối yêu cầu';
+            alert(msg);
         } finally {
             setActionLoading(false);
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        try {
-            return new Date(dateString).toLocaleString('vi-VN', {
-                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-            });
-        } catch {
-            return 'Invalid Date';
-        }
-    };
+    const formatDate = (dateString) => (dateString ? formatDateTime(dateString) : 'N/A');
 
     const getStatusBadge = (status) => {
         const badges = {
-            'Pending': <span className="status-badge pending">Chờ duyệt</span>,
-            'Approved': <span className="status-badge completed" style={{ background: '#d1fae5', color: '#065f46' }}>Đã duyệt</span>,
-            'Rejected': <span className="status-badge cancelled" style={{ background: '#fee2e2', color: '#991b1b' }}>Đã từ chối</span>,
+            PendingApproval: <span className="status-badge pending">Chờ duyệt</span>,
+            Pending: <span className="status-badge pending">Chờ duyệt</span>,
+            PendingPayment: <span className="status-badge" style={{ background: '#fef3c7', color: '#92400e' }}>Chờ TT</span>,
+            Approved: <span className="status-badge completed" style={{ background: '#d1fae5', color: '#065f46' }}>Đã duyệt</span>,
+            Rejected: <span className="status-badge cancelled" style={{ background: '#fee2e2', color: '#991b1b' }}>Đã từ chối</span>,
         };
         return badges[status] || <span className="status-badge">{status}</span>;
     };
+
+    const canApproveOrReject = (status) =>
+        status === 'PendingApproval' || status === 'Pending';
 
     return (
         <AdminLayout title="Quản lý yêu cầu làm chủ bãi xe" subtitle="Duyệt hoặc từ chối yêu cầu nâng cấp tài khoản">
             {/* Filter Tabs */}
             <div className="content-section" style={{ marginBottom: '20px' }}>
                 <div className="period-tabs">
-                    <button className={`tab ${statusFilter === '' ? 'active' : ''}`} onClick={() => setStatusFilter('')}>Tất cả</button>
-                    <button className={`tab ${statusFilter === 'Pending' ? 'active' : ''}`} onClick={() => setStatusFilter('Pending')}>Chờ duyệt</button>
-                    <button className={`tab ${statusFilter === 'Approved' ? 'active' : ''}`} onClick={() => setStatusFilter('Approved')}>Đã duyệt</button>
-                    <button className={`tab ${statusFilter === 'Rejected' ? 'active' : ''}`} onClick={() => setStatusFilter('Rejected')}>Đã từ chối</button>
+                    <button className={`tab ${statusFilter === STATUS_ALL ? 'active' : ''}`} onClick={() => setStatusFilter(STATUS_ALL)}>Tất cả</button>
+                    <button className={`tab ${statusFilter === STATUS_PENDING_APPROVAL ? 'active' : ''}`} onClick={() => setStatusFilter(STATUS_PENDING_APPROVAL)}>Chờ duyệt</button>
+                    <button className={`tab ${statusFilter === STATUS_APPROVED ? 'active' : ''}`} onClick={() => setStatusFilter(STATUS_APPROVED)}>Đã duyệt</button>
+                    <button className={`tab ${statusFilter === STATUS_REJECTED ? 'active' : ''}`} onClick={() => setStatusFilter(STATUS_REJECTED)}>Đã từ chối</button>
                 </div>
             </div>
 
@@ -156,7 +173,7 @@ const OwnerRequestsManagement = () => {
                                             <td className="text-gray">{formatDate(request.createdAt)}</td>
                                             <td>{getStatusBadge(request.status)}</td>
                                             <td>
-                                                {request.status === 'Pending' ? (
+                                                {canApproveOrReject(request.status) ? (
                                                     <div style={{ display: 'flex', gap: '8px' }}>
                                                         <button className="action-btn approve" onClick={() => handleApprove(request.requestId)} disabled={actionLoading} title="Duyệt">
                                                             <CheckCircle size={16} />
@@ -207,8 +224,8 @@ const OwnerRequestsManagement = () => {
             )}
             <style jsx="true">{`
                 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-                .modal-content { background: white; padding: 24px; borderRadius: 12px; min-width: 400px; }
-                .action-btn { padding: 6px; borderRadius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
+                .modal-content { background: white; padding: 24px; border-radius: 12px; min-width: 400px; }
+                .action-btn { padding: 6px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .action-btn.approve { background: #10b981; color: white; }
                 .action-btn.reject { background: #ef4444; color: white; }
             `}</style>

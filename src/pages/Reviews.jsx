@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MessageSquare, Trash2, Search, Filter, Star } from 'lucide-react';
 import api from '../services/api';
+import { formatDateTime } from '../utils/helpers';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -61,14 +62,7 @@ const Reviews = () => {
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        try {
-            return new Date(dateString).toLocaleString('vi-VN');
-        } catch {
-            return 'Invalid Date';
-        }
-    };
+    const formatDate = (dateString) => (dateString ? formatDateTime(dateString) : 'N/A');
 
     return (
         <AdminLayout title="Quản lý Đánh giá" subtitle="Xem và kiểm duyệt đánh giá từ người dùng">

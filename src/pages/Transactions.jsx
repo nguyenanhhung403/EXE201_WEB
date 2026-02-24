@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BadgeDollarSign, Search, RefreshCw, AlertCircle } from 'lucide-react';
 import api from '../services/api';
+import { formatDateTime } from '../utils/helpers';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -79,7 +80,7 @@ const Transactions = () => {
     };
 
     return (
-        <AdminLayout title="Quản lý Giao dịch" subtitle="Xem lịch sử giao dịch toàn hệ thống">
+        <AdminLayout title="Quản lý Giao dịch" subtitle="Chỉ hiển thị phí nâng cấp owner + phí bãi gửi xe tháng/năm (Subscription)">
             <div className="content-section" style={{ marginBottom: '20px' }}>
                 <div className="filter-bar">
                     <select
@@ -123,7 +124,7 @@ const Transactions = () => {
                                             <td>{tx.userName || 'N/A'}</td>
                                             <td style={{ fontWeight: 600 }}>{tx.amount?.toLocaleString()} đ</td>
                                             <td>{tx.paymentMethod}</td>
-                                            <td className="text-gray">{new Date(tx.createdAt).toLocaleString('vi-VN')}</td>
+                                            <td className="text-gray">{formatDateTime(tx.createdAt)}</td>
                                             <td>{getStatusBadge(tx.paymentStatus)}</td>
                                             <td>
                                                 {tx.paymentStatus === 'Completed' && (

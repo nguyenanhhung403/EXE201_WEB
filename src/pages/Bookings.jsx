@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, MoreVertical } from 'lucide-react';
 import api from '../services/api';
+import { formatDateShort } from '../utils/helpers';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -41,10 +42,7 @@ const Bookings = () => {
         }
     }, [pagination.pageSize]);
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
-    };
+    const formatDate = (dateString) => (dateString ? formatDateShort(dateString) : 'N/A');
 
     return (
         <AdminLayout title="Quản lý Đặt chỗ" subtitle="Danh sách tất cả các lượt đặt chỗ">

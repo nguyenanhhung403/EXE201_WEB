@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import api from '../services/api';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
+import { formatDateTime, formatDate } from '../utils/helpers';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -126,17 +127,7 @@ const Admin = () => {
         setRevenuePeriod(period);
     };
 
-    const formatDate = (dateString, simple = false) => {
-        if (!dateString) return 'N/A';
-        try {
-            const options = simple
-                ? { month: '2-digit', day: '2-digit' }
-                : { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-            return new Date(dateString).toLocaleString('vi-VN', options);
-        } catch {
-            return 'Invalid Date';
-        }
-    };
+    const formatDateLocal = (dateString, simple = false) => (dateString ? (simple ? formatDate(dateString, true) : formatDateTime(dateString)) : 'N/A');
 
     return (
         <AdminLayout title="Tổng quan Dashboard" subtitle="Chào mừng quay trở lại, Admin">
@@ -378,7 +369,7 @@ const Admin = () => {
                                             <tr key={index}>
                                                 <td><span className="status-badge login">{activity.type}</span></td>
                                                 <td>{activity.description}</td>
-                                                <td className="text-gray">{formatDate(activity.createdAt)}</td>
+                                                <td className="text-gray">{formatDateLocal(activity.createdAt)}</td>
                                             </tr>
                                         ))
                                     ) : (
