@@ -1,8 +1,65 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, MoreVertical, Calendar, User, MapPin, Clock, DollarSign, LogOut, Activity, Users as UsersIcon } from 'lucide-react';
+import { Search, Filter, MoreVertical, Calendar, User, MapPin, Clock, DollarSign, LogOut, Activity, Users as UsersIcon, MessageSquare } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
+
+const DUMMY_BOOKINGS = [
+    {
+        bookingId: 'BK001',
+        parkingLotName: 'Bãi xe Vincom Center Đồng Khởi',
+        vehiclePlate: '51A-123.45',
+        checkInTime: new Date(Date.now() - 3600000 * 2).toISOString(),
+        checkOutTime: new Date(Date.now() - 3600000).toISOString(),
+        totalCharge: 30000,
+        status: 'Completed',
+    },
+    {
+        bookingId: 'BK002',
+        parkingLotName: 'Bãi xe Landmark 81',
+        vehiclePlate: '59B-456.78',
+        checkInTime: new Date(Date.now() - 7200000).toISOString(),
+        checkOutTime: null,
+        totalCharge: 75000,
+        status: 'Active',
+    },
+    {
+        bookingId: 'BK003',
+        parkingLotName: 'Bãi xe Bitexco Financial Tower',
+        vehiclePlate: '51F-789.01',
+        checkInTime: new Date(Date.now() - 86400000).toISOString(),
+        checkOutTime: new Date(Date.now() - 82800000).toISOString(),
+        totalCharge: 60000,
+        status: 'Completed',
+    },
+    {
+        bookingId: 'BK004',
+        parkingLotName: 'Bãi xe Saigon Centre',
+        vehiclePlate: '51G-234.56',
+        checkInTime: new Date(Date.now() - 172800000).toISOString(),
+        checkOutTime: new Date(Date.now() - 169200000).toISOString(),
+        totalCharge: 54000,
+        status: 'Completed',
+    },
+    {
+        bookingId: 'BK005',
+        parkingLotName: 'Bãi xe Sân bay Tân Sơn Nhất',
+        vehiclePlate: '43C-678.90',
+        checkInTime: new Date(Date.now() - 259200000).toISOString(),
+        checkOutTime: new Date(Date.now() - 252000000).toISOString(),
+        totalCharge: 210000,
+        status: 'Cancelled',
+    },
+    {
+        bookingId: 'BK006',
+        parkingLotName: 'Bãi xe Landmark 81',
+        vehiclePlate: '92A-111.22',
+        checkInTime: new Date(Date.now() - 1800000).toISOString(),
+        checkOutTime: null,
+        totalCharge: 50000,
+        status: 'Active',
+    },
+];
 
 const Bookings = () => {
     const navigate = useNavigate();
@@ -15,30 +72,32 @@ const Bookings = () => {
         totalPages: 0
     });
 
-    useEffect(() => {
-        fetchBookings(pagination.page);
-    }, [fetchBookings, pagination.page]);
-
     const fetchBookings = useCallback(async (page) => {
         setLoading(true);
         try {
             const data = await api.admin.getBookings(page, pagination.pageSize);
             console.log('Bookings API Response:', data);
 
-            setBookings(data.items || []);
+            const items = data.items && data.items.length > 0 ? data.items : DUMMY_BOOKINGS;
+            setBookings(items);
             setPagination(prev => ({
                 ...prev,
                 page: data.page || 1,
                 pageSize: data.pageSize || 20,
-                totalCount: data.totalCount || 0,
-                totalPages: data.totalPages || 0
+                totalCount: data.totalCount || DUMMY_BOOKINGS.length,
+                totalPages: data.totalPages || 1
             }));
         } catch (error) {
-            console.error('Failed to fetch bookings:', error);
+            console.error('Failed to fetch bookings, using dummy data:', error);
+            setBookings(DUMMY_BOOKINGS);
         } finally {
             setLoading(false);
         }
     }, [pagination.pageSize]);
+
+    useEffect(() => {
+        fetchBookings(pagination.page);
+    }, [fetchBookings, pagination.page]);
 
     const handleLogout = () => {
         api.auth.clearTokens();
@@ -64,21 +123,25 @@ const Bookings = () => {
                     </a>
                     <a href="/admin/users" className="nav-item">
                         <UsersIcon size={20} />
-                        <span>Users</span>
+                        <span>Người dùng</span>
                     </a>
                     <a href="/admin/parking-lots" className="nav-item">
                         <MapPin size={20} />
-                        <span>Parking Lots</span>
+                        <span>Bãi đỗ xe</span>
                     </a>
                     <a href="/admin/bookings" className="nav-item active">
                         <Calendar size={20} />
-                        <span>Bookings</span>
+                        <span>Đặt chỗ</span>
+                    </a>
+                    <a href="/admin/reviews" className="nav-item">
+                        <MessageSquare size={20} />
+                        <span>Đánh giá</span>
                     </a>
                 </nav>
                 <div className="sidebar-footer">
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={20} />
-                        <span>Logout</span>
+                        <span>Đăng xuất</span>
                     </button>
                 </div>
             </aside>

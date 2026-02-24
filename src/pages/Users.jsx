@@ -1,8 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, MoreVertical, Shield, User, Phone, Mail, Calendar, LogOut, ChevronLeft, ChevronRight, Activity, Users as UsersIcon, MapPin, X } from 'lucide-react';
+import { Search, Filter, MoreVertical, Shield, User, Phone, Mail, Calendar, LogOut, ChevronLeft, ChevronRight, Activity, Users as UsersIcon, MapPin, MessageSquare, X } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
+
+const DUMMY_USERS = [
+    {
+        userId: 'u-0001',
+        fullName: 'Nguyễn Văn An',
+        email: 'an.nguyen@gmail.com',
+        phone: '0901234567',
+        roleName: 'Driver',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
+    },
+    {
+        userId: 'u-0002',
+        fullName: 'Trần Thị Bích',
+        email: 'bich.tran@gmail.com',
+        phone: '0912345678',
+        roleName: 'Host',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 60).toISOString(),
+    },
+    {
+        userId: 'u-0003',
+        fullName: 'Lê Minh Khoa',
+        email: 'khoa.le@gmail.com',
+        phone: '0923456789',
+        roleName: 'Driver',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+    },
+    {
+        userId: 'u-0004',
+        fullName: 'Phạm Thùy Linh',
+        email: 'linh.pham@gmail.com',
+        phone: '0934567890',
+        roleName: 'Host',
+        isActive: false,
+        createdAt: new Date(Date.now() - 86400000 * 90).toISOString(),
+    },
+    {
+        userId: 'u-0005',
+        fullName: 'Hoàng Tuấn Kiệt',
+        email: 'kiet.hoang@gmail.com',
+        phone: '0945678901',
+        roleName: 'Driver',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    },
+    {
+        userId: 'u-0006',
+        fullName: 'Võ Thị Thu Hương',
+        email: 'huong.vo@gmail.com',
+        phone: '0956789012',
+        roleName: 'Driver',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 15).toISOString(),
+    },
+    {
+        userId: 'u-0007',
+        fullName: 'Đặng Quốc Hùng',
+        email: 'hung.dang@gmail.com',
+        phone: '0967890123',
+        roleName: 'Host',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 45).toISOString(),
+    },
+    {
+        userId: 'u-0008',
+        fullName: 'Admin Hệ thống',
+        email: 'admin@smartparking.vn',
+        phone: '0978901234',
+        roleName: 'Admin',
+        isActive: true,
+        createdAt: new Date(Date.now() - 86400000 * 365).toISOString(),
+    },
+];
 
 const Users = () => {
     const navigate = useNavigate();
@@ -23,28 +98,36 @@ const Users = () => {
         totalPages: 0
     });
 
-    useEffect(() => {
-        fetchUsers(pagination.page);
-    }, [pagination.page]);
-
     const fetchUsers = async (page) => {
         setLoading(true);
         try {
             const data = await api.admin.getUsers(page, pagination.pageSize);
-            if (data && data.items) {
+            if (data && data.items && data.items.length > 0) {
                 setUsers(data.items);
                 setPagination(prev => ({
                     ...prev,
                     totalCount: data.totalCount || 0,
                     totalPages: data.totalPages || 1
                 }));
+            } else {
+                setUsers(DUMMY_USERS);
+                setPagination(prev => ({
+                    ...prev,
+                    totalCount: DUMMY_USERS.length,
+                    totalPages: 1
+                }));
             }
         } catch (error) {
-            console.error("Failed to fetch users", error);
+            console.error('Failed to fetch users, using dummy data:', error);
+            setUsers(DUMMY_USERS);
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchUsers(pagination.page);
+    }, [pagination.page]);
 
     const handleEditClick = (user) => {
         setSelectedUser(user);
@@ -93,21 +176,25 @@ const Users = () => {
                     </a>
                     <a href="/admin/users" className="nav-item active">
                         <UsersIcon size={20} />
-                        <span>Users</span>
+                        <span>Người dùng</span>
                     </a>
                     <a href="/admin/parking-lots" className="nav-item">
                         <MapPin size={20} />
-                        <span>Parking Lots</span>
+                        <span>Bãi đỗ xe</span>
                     </a>
                     <a href="/admin/bookings" className="nav-item">
                         <Calendar size={20} />
-                        <span>Bookings</span>
+                        <span>Đặt chỗ</span>
+                    </a>
+                    <a href="/admin/reviews" className="nav-item">
+                        <MessageSquare size={20} />
+                        <span>Đánh giá</span>
                     </a>
                 </nav>
                 <div className="sidebar-footer">
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={20} />
-                        <span>Logout</span>
+                        <span>Đăng xuất</span>
                     </button>
                 </div>
             </aside>

@@ -1,8 +1,61 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, MoreVertical, MapPin, Car, DollarSign, Plus, LogOut, Activity, Users as UsersIcon, Calendar } from 'lucide-react';
+import { Search, Filter, MoreVertical, MapPin, Car, DollarSign, Plus, LogOut, Activity, Users as UsersIcon, Calendar, MessageSquare } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
+
+const DUMMY_PARKING_LOTS = [
+    {
+        parkingLotId: '1',
+        name: 'Bãi xe Vincom Center Đồng Khởi',
+        address: '72 Lê Thánh Tôn, Bến Nghé, Q.1, TP.HCM',
+        status: 'Active',
+        totalCapacity: 250,
+        availableCapacity: 80,
+        pricePerHour: 15000,
+        rating: 4.8,
+    },
+    {
+        parkingLotId: '2',
+        name: 'Bãi xe Bitexco Financial Tower',
+        address: '2 Hải Triều, Bến Nghé, Q.1, TP.HCM',
+        status: 'Active',
+        totalCapacity: 180,
+        availableCapacity: 45,
+        pricePerHour: 20000,
+        rating: 4.7,
+    },
+    {
+        parkingLotId: '3',
+        name: 'Bãi xe Landmark 81',
+        address: '720A Điện Biên Phủ, Vinhomes Central Park, Bình Thạnh, TP.HCM',
+        status: 'Active',
+        totalCapacity: 500,
+        availableCapacity: 130,
+        pricePerHour: 25000,
+        rating: 4.9,
+    },
+    {
+        parkingLotId: '4',
+        name: 'Bãi xe Saigon Centre',
+        address: '65 Lê Lợi, Bến Nghé, Q.1, TP.HCM',
+        status: 'Active',
+        totalCapacity: 120,
+        availableCapacity: 20,
+        pricePerHour: 18000,
+        rating: 4.5,
+    },
+    {
+        parkingLotId: '5',
+        name: 'Bãi xe Sân bay Tân Sơn Nhất',
+        address: 'Trường Sơn, Phường 2, Tân Bình, TP.HCM',
+        status: 'Maintenance',
+        totalCapacity: 800,
+        availableCapacity: 0,
+        pricePerHour: 30000,
+        rating: 4.2,
+    },
+];
 
 const ParkingLots = () => {
     const navigate = useNavigate();
@@ -15,30 +68,32 @@ const ParkingLots = () => {
         totalPages: 0
     });
 
-    useEffect(() => {
-        fetchParkingLots(pagination.page);
-    }, [fetchParkingLots, pagination.page]);
-
     const fetchParkingLots = useCallback(async (page) => {
         setLoading(true);
         try {
             const data = await api.admin.getParkingLots(page, pagination.pageSize);
             console.log('Parking Lots API Response:', data);
 
-            setParkingLots(data.items || []);
+            const items = data.items && data.items.length > 0 ? data.items : DUMMY_PARKING_LOTS;
+            setParkingLots(items);
             setPagination(prev => ({
                 ...prev,
                 page: data.page || 1,
                 pageSize: data.pageSize || 20,
-                totalCount: data.totalCount || 0,
-                totalPages: data.totalPages || 0
+                totalCount: data.totalCount || DUMMY_PARKING_LOTS.length,
+                totalPages: data.totalPages || 1
             }));
         } catch (error) {
-            console.error('Failed to fetch parking lots:', error);
+            console.error('Failed to fetch parking lots, using dummy data:', error);
+            setParkingLots(DUMMY_PARKING_LOTS);
         } finally {
             setLoading(false);
         }
     }, [pagination.pageSize]);
+
+    useEffect(() => {
+        fetchParkingLots(pagination.page);
+    }, [fetchParkingLots, pagination.page]);
 
     const handleLogout = () => {
         api.auth.clearTokens();
@@ -63,21 +118,25 @@ const ParkingLots = () => {
                     </a>
                     <a href="/admin/users" className="nav-item">
                         <UsersIcon size={20} />
-                        <span>Users</span>
+                        <span>Người dùng</span>
                     </a>
                     <a href="/admin/parking-lots" className="nav-item active">
                         <MapPin size={20} />
-                        <span>Parking Lots</span>
+                        <span>Bãi đỗ xe</span>
                     </a>
                     <a href="/admin/bookings" className="nav-item">
                         <Calendar size={20} />
-                        <span>Bookings</span>
+                        <span>Đặt chỗ</span>
+                    </a>
+                    <a href="/admin/reviews" className="nav-item">
+                        <MessageSquare size={20} />
+                        <span>Đánh giá</span>
                     </a>
                 </nav>
                 <div className="sidebar-footer">
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={20} />
-                        <span>Logout</span>
+                        <span>Đăng xuất</span>
                     </button>
                 </div>
             </aside>

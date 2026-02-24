@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, MapPin, DollarSign, Calendar, LogOut, Activity, Star, TrendingUp, MessageSquare, BarChart2, PieChart as PieIcon } from 'lucide-react';
+import { Users, MapPin, DollarSign, Calendar, LogOut, Activity, Star, TrendingUp, MessageSquare, BarChart2, PieChart as PieIcon, Car, CreditCard, UserCheck } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, PieChart, Pie, Cell } from 'recharts';
 import api from '../services/api';
 import '../styles/Admin.css';
@@ -8,10 +8,12 @@ import '../styles/Admin.css';
 const Admin = () => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({
-        users: { totalUsers: 1250, activeUsers: 1100, newUsersToday: 15 },
+        users: { totalUsers: 1250, totalDrivers: 850, totalHosts: 400, newUsersToday: 15 },
         parkingLots: { totalParkingLots: 45, activeParkingLots: 42, maintenanceParkingLots: 3 },
         revenue: { totalRevenue: 15600000, method: 'All' },
-        bookings: { totalBookings: 850, activeBookings: 120, completedBookings: 710, cancelledBookings: 20 }
+        bookings: { totalBookings: 850, activeBookings: 120, completedBookings: 710, cancelledBookings: 20 },
+        payments: { totalPayments: 3240, successPayments: 3100, pendingPayments: 140 },
+        reviews: { totalReviews: 1876, avgRating: 4.7, newReviewsToday: 23 }
     });
 
     // Dummy Data for UI Demo
@@ -204,18 +206,37 @@ const Admin = () => {
                 </header>
 
                 {/* Stats Grid */}
-                <div className="stats-grid">
+                <div className="stats-grid stats-grid-6">
+                    {/* User (Host) Card */}
                     <div className="stat-card blue">
                         <div className="stat-icon">
-                            <Users size={24} />
+                            <UserCheck size={24} />
                         </div>
                         <div className="stat-content">
-                            <h3>Tổng thành viên</h3>
-                            <p className="stat-number">{stats.users.totalUsers}</p>
-                            <span className="stat-label">+{stats.users.newUsersToday} hôm nay</span>
+                            <h3>Người dùng (Host)</h3>
+                            <p className="stat-number">{stats.users.totalHosts.toLocaleString()}</p>
+                            <div className="stat-sub-row">
+                                <span className="stat-badge stat-badge-blue">Tổng: {stats.users.totalUsers.toLocaleString()}</span>
+                                <span className="stat-label">+{stats.users.newUsersToday} hôm nay</span>
+                            </div>
                         </div>
                     </div>
 
+                    {/* Driver Card */}
+                    <div className="stat-card indigo">
+                        <div className="stat-icon">
+                            <Car size={24} />
+                        </div>
+                        <div className="stat-content">
+                            <h3>Tài xế (Driver)</h3>
+                            <p className="stat-number">{stats.users.totalDrivers.toLocaleString()}</p>
+                            <div className="stat-sub-row">
+                                <span className="stat-badge stat-badge-indigo">{Math.round(stats.users.totalDrivers / stats.users.totalUsers * 100)}% tổng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Parking Lots */}
                     <div className="stat-card green">
                         <div className="stat-icon">
                             <MapPin size={24} />
@@ -227,6 +248,7 @@ const Admin = () => {
                         </div>
                     </div>
 
+                    {/* Revenue */}
                     <div className="stat-card orange">
                         <div className="stat-icon">
                             <DollarSign size={24} />
@@ -238,14 +260,33 @@ const Admin = () => {
                         </div>
                     </div>
 
-                    <div className="stat-card purple">
+                    {/* Total Payments */}
+                    <div className="stat-card teal">
                         <div className="stat-icon">
-                            <Calendar size={24} />
+                            <CreditCard size={24} />
                         </div>
                         <div className="stat-content">
-                            <h3>Đặt chỗ</h3>
-                            <p className="stat-number">{stats.bookings.totalBookings}</p>
-                            <span className="stat-label">{stats.bookings.activeBookings} đang diễn ra</span>
+                            <h3>Tổng lượt thanh toán</h3>
+                            <p className="stat-number">{stats.payments.totalPayments.toLocaleString()}</p>
+                            <div className="stat-sub-row">
+                                <span className="stat-badge stat-badge-green">{stats.payments.successPayments.toLocaleString()} thành công</span>
+                                <span className="stat-badge stat-badge-orange">{stats.payments.pendingPayments} chờ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Total Reviews */}
+                    <div className="stat-card purple">
+                        <div className="stat-icon">
+                            <Star size={24} />
+                        </div>
+                        <div className="stat-content">
+                            <h3>Tổng lượt đánh giá</h3>
+                            <p className="stat-number">{stats.reviews.totalReviews.toLocaleString()}</p>
+                            <div className="stat-sub-row">
+                                <span className="stat-badge stat-badge-purple">⭐ {stats.reviews.avgRating} TB</span>
+                                <span className="stat-label">+{stats.reviews.newReviewsToday} hôm nay</span>
+                            </div>
                         </div>
                     </div>
                 </div>
