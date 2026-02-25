@@ -92,7 +92,7 @@ const Bookings = () => {
                                             </div>
                                         </td>
                                         <td style={{ fontWeight: '600', color: '#000000' }}>
-                                            {booking.totalCharge?.toLocaleString() || 0} đ
+                                            {(booking.totalAmount ?? booking.totalCharge)?.toLocaleString() || 0} đ
                                         </td>
                                         <td>
                                             <span className={`status-badge ${booking.status === 'Completed' ? 'payment' :

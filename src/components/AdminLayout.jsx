@@ -53,10 +53,6 @@ const AdminLayout = ({ children, title, subtitle }) => {
                         <Receipt size={20} />
                         <span>Giao dịch</span>
                     </Link>
-                    <Link to="/admin/reports" className={`nav-item ${isActive('/admin/reports')}`}>
-                        <BarChart size={20} />
-                        <span>Báo cáo</span>
-                    </Link>
                 </nav>
                 <div className="sidebar-footer">
                     <button onClick={handleLogout} className="logout-btn">

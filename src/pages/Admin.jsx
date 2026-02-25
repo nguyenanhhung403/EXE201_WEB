@@ -78,16 +78,17 @@ const Admin = () => {
                         owners: ownersRes?.totalCount || 0
                     },
                     parkingLots: {
-                        totalParkingLots: parkingLotsRes?.totalParkingLots || 0,
-                        activeParkingLots: parkingLotsRes?.activeParkingLots || 0,
+                        totalParkingLots: (parkingLotsRes?.totalActiveParkingLots || 0) + (parkingLotsRes?.totalInactiveParkingLots || 0),
+                        activeParkingLots: parkingLotsRes?.totalActiveParkingLots || 0,
                         maintenanceParkingLots: 0
                     },
                     revenue: {
-                        totalRevenue: revenueRes?.totalRevenue || 0,
+                        // Doanh thu admin = commission từ upgrade owner + 10% phí bãi tháng/năm
+                        totalRevenue: revenueRes?.totalCommission ?? revenueRes?.totalRevenue ?? 0,
                         method: 'All'
                     },
                     bookings: {
-                        totalBookings: bookingsRes?.totalBookings || 0,
+                        totalBookings: (bookingsRes?.activeBookings || 0) + (bookingsRes?.pendingBookings || 0) + (bookingsRes?.completedToday || 0),
                         activeBookings: bookingsRes?.activeBookings || 0
                     },
                     transactions: {
@@ -174,7 +175,7 @@ const Admin = () => {
                             <div className="stat-content">
                                 <h3>Doanh thu hôm nay</h3>
                                 <p className="stat-number">{stats.revenue.totalRevenue.toLocaleString()} đ</p>
-                                <span className="stat-label">Doanh thu ngày</span>
+                                <span className="stat-label">Admin: phí upgrade + 10% commission bãi</span>
                             </div>
                         </div>
 

@@ -101,9 +101,9 @@ const api = {
             const response = await axiosInstance.put(`/admin/users/${id}`, userData);
             return response.data;
         },
-        // New summary methods
+        // New summary methods (activities = Payment + Wallet)
         getTotalTransactions: async () => {
-            const response = await axiosInstance.get('/admin/transactions?pageSize=1');
+            const response = await axiosInstance.get('/admin/activities?pageSize=1');
             return response.data.data?.totalCount || response.data?.totalCount || 0;
         },
         getTotalReviews: async () => {
@@ -119,55 +119,25 @@ const api = {
             const response = await axiosInstance.get(`/admin/dashboard/recent-activities?limit=${limit}`);
             return response.data.data || response.data;
         },
-        // Mock APIs for new features
-        getRevenueStats: async (period = 'day') => {
-            // Mock data structure
-            const mockData = {
-                day: [
-                    { name: '00:00', revenue: 150000 }, { name: '04:00', revenue: 50000 },
-                    { name: '08:00', revenue: 850000 }, { name: '12:00', revenue: 1200000 },
-                    { name: '16:00', revenue: 950000 }, { name: '20:00', revenue: 1500000 },
-                    { name: '23:59', revenue: 400000 },
-                ],
-                week: [
-                    { name: 'Mon', revenue: 5200000 }, { name: 'Tue', revenue: 4800000 },
-                    { name: 'Wed', revenue: 6100000 }, { name: 'Thu', revenue: 5500000 },
-                    { name: 'Fri', revenue: 8200000 }, { name: 'Sat', revenue: 9500000 },
-                    { name: 'Sun', revenue: 8800000 },
-                ],
-                month: [
-                    { name: 'Week 1', revenue: 35000000 }, { name: 'Week 2', revenue: 42000000 },
-                    { name: 'Week 3', revenue: 38000000 }, { name: 'Week 4', revenue: 45000000 },
-                ],
-                year: [
-                    { name: 'Jan', revenue: 150000000 }, { name: 'Feb', revenue: 180000000 },
-                    { name: 'Mar', revenue: 160000000 }, { name: 'Apr', revenue: 190000000 },
-                    { name: 'May', revenue: 210000000 }, { name: 'Jun', revenue: 150000000 }, // Future months...
-                ]
-            };
-            return new Promise(resolve => setTimeout(() => resolve(mockData[period] || mockData.week), 500));
+        // Dashboard chart APIs (real backend)
+        getRevenueStats: async (period = 'week') => {
+            const response = await axiosInstance.get(`/admin/dashboard/revenue-chart?period=${period}`);
+            return response.data.data || response.data || [];
         },
-        getRecentReviews: async () => {
-            return new Promise(resolve => setTimeout(() => resolve([
-                { id: 1, user: 'Nguyễn Văn A', rating: 5, comment: 'Bãi đỗ xe rộng rãi, bảo vệ nhiệt tình.', date: '2024-03-15', avatar: 'A' },
-                { id: 2, user: 'Trần Thị B', rating: 4, comment: 'Giá hơi cao so với mặt bằng chung.', date: '2024-03-14', avatar: 'B' },
-                { id: 3, user: 'Lê Hoàng C', rating: 5, comment: 'Hệ thống check-in nhanh gọn, tuyệt vời!', date: '2024-03-14', avatar: 'C' },
-                { id: 4, user: 'Phạm Minh D', rating: 3, comment: 'Lối vào hơi khó tìm.', date: '2024-03-13', avatar: 'D' },
-            ]), 600));
+        getRecentReviews: async (limit = 5) => {
+            const response = await axiosInstance.get(`/admin/dashboard/recent-reviews?limit=${limit}`);
+            const data = response.data.data || response.data || [];
+            return Array.isArray(data) ? data : [];
         },
-        getTopParkingLots: async () => {
-            return new Promise(resolve => setTimeout(() => resolve([
-                { id: 1, name: 'Vincom Center Đồng Khởi', address: 'Q.1, TP.HCM', revenue: 45000000, bookings: 150, rating: 4.8 },
-                { id: 2, name: 'Landmark 81 Parking', address: 'Bình Thạnh, TP.HCM', revenue: 38000000, bookings: 120, rating: 4.9 },
-                { id: 3, name: 'Sân bay Tân Sơn Nhất', address: 'Tân Bình, TP.HCM', revenue: 62000000, bookings: 300, rating: 4.5 },
-                { id: 4, name: 'Aeon Mall Tân Phú', address: 'Tân Phú, TP.HCM', revenue: 28000000, bookings: 95, rating: 4.7 },
-            ]), 700));
+        getTopParkingLots: async (limit = 10) => {
+            const response = await axiosInstance.get(`/admin/dashboard/top-parking-lots?limit=${limit}`);
+            const data = response.data.data || response.data || [];
+            return Array.isArray(data) ? data : [];
         },
         getUserDistribution: async () => {
-            return new Promise(resolve => setTimeout(() => resolve([
-                { name: 'Driver', value: 850 },
-                { name: 'Host', value: 150 },
-            ]), 600));
+            const response = await axiosInstance.get('/admin/dashboard/user-distribution');
+            const data = response.data.data || response.data || [];
+            return Array.isArray(data) ? data : [];
         },
         // Owner Upgrade Requests Management
         getOwnerUpgradeRequests: async (status = '', page = 1, pageSize = 50) => {
@@ -196,14 +166,23 @@ const api = {
             const response = await axiosInstance.delete(`/admin/reviews/${id}`);
             return response.data;
         },
-        // Transactions Management
+        // Activities (tất cả: Payment + Wallet - booking, nạp tiền, thanh toán, owner nhận, hoàn tiền...)
+        getActivities: async (page = 1, pageSize = 20, filters = {}) => {
+            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const response = await axiosInstance.get(`/admin/activities?${params}`);
+            return response.data.data || response.data;
+        },
+        // Transactions Management (PaymentTransaction only)
         getTransactions: async (page = 1, pageSize = 20, filters = {}) => {
             const params = new URLSearchParams({ page, pageSize, ...filters });
             const response = await axiosInstance.get(`/admin/transactions?${params}`);
             return response.data.data || response.data;
         },
-        processRefund: async (id, reason) => {
-            const response = await axiosInstance.post(`/admin/transactions/${id}/refund`, { reason });
+        processRefund: async (id, reason, refundAmount) => {
+            const response = await axiosInstance.post(`/admin/transactions/${id}/refund`, {
+                refundAmount: refundAmount ?? 0,
+                reason
+            });
             return response.data;
         },
         // Reports

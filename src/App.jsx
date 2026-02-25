@@ -21,7 +21,6 @@ import ForgotPassword from './pages/ForgotPassword';
 import OwnerRequestsManagement from './pages/OwnerRequestsManagement';
 import Reviews from './pages/Reviews';
 import Transactions from './pages/Transactions';
-import Reports from './pages/Reports';
 
 function App() {
   return (
@@ -43,7 +42,6 @@ function App() {
           <Route path="/admin/owner-requests" element={<OwnerRequestsManagement />} />
           <Route path="/admin/reviews" element={<Reviews />} />
           <Route path="/admin/transactions" element={<Transactions />} />
-          <Route path="/admin/reports" element={<Reports />} />
         </Routes>
       </Router>
     </HelmetProvider>

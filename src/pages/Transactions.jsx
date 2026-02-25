@@ -13,7 +13,7 @@ const Transactions = () => {
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState('');
-    const [refundModal, setRefundModal] = useState({ show: false, transactionId: null });
+    const [refundModal, setRefundModal] = useState({ show: false, transactionId: null, amount: 0 });
     const [refundReason, setRefundReason] = useState('');
     const [actionLoading, setActionLoading] = useState(false);
 
@@ -35,7 +35,7 @@ const Transactions = () => {
         setLoading(true);
         try {
             const filters = statusFilter ? { status: statusFilter } : {};
-            const response = await api.admin.getTransactions(page, 20, filters);
+            const response = await api.admin.getActivities(page, 20, filters);
 
             if (response && response.items) {
                 setTransactions(response.items);
@@ -57,9 +57,9 @@ const Transactions = () => {
         }
         setActionLoading(true);
         try {
-            await api.admin.processRefund(refundModal.transactionId, refundReason);
+            await api.admin.processRefund(refundModal.transactionId, refundReason, refundModal.amount);
             alert('Hoàn tiền thành công');
-            setRefundModal({ show: false, transactionId: null });
+            setRefundModal({ show: false, transactionId: null, amount: 0 });
             fetchTransactions();
         } catch (error) {
             console.error('Refund error:', error);
@@ -71,16 +71,17 @@ const Transactions = () => {
 
     const getStatusBadge = (status) => {
         const badges = {
+            'Success': <span className="status-badge payment" style={{ background: '#dcfce7', color: '#15803d' }}>Thành công</span>,
             'Completed': <span className="status-badge payment" style={{ background: '#dcfce7', color: '#15803d' }}>Thành công</span>,
             'Pending': <span className="status-badge booking" style={{ background: '#fef3c7', color: '#b45309' }}>Đang xử lý</span>,
             'Refunded': <span className="status-badge error" style={{ background: '#fee2e2', color: '#b91c1c' }}>Đã hoàn tiền</span>,
             'Failed': <span className="status-badge error">Thất bại</span>
         };
-        return badges[status] || <span>{status}</span>;
+        return badges[status] || <span>{status || '-'}</span>;
     };
 
     return (
-        <AdminLayout title="Quản lý Giao dịch" subtitle="Chỉ hiển thị phí nâng cấp owner + phí bãi gửi xe tháng/năm (Subscription)">
+        <AdminLayout title="Quản lý Giao dịch" subtitle="Tất cả hoạt động: booking, nạp tiền, thanh toán, chuyển owner, hoàn tiền...">
             <div className="content-section" style={{ marginBottom: '20px' }}>
                 <div className="filter-bar">
                     <select
@@ -106,7 +107,9 @@ const Transactions = () => {
                             <thead>
                                 <tr>
                                     <th>Mã GD</th>
+                                    <th>Loại</th>
                                     <th>Người dùng</th>
+                                    <th>Hoạt động</th>
                                     <th>Số tiền</th>
                                     <th>Phương thức</th>
                                     <th>Thời gian</th>
@@ -117,21 +120,30 @@ const Transactions = () => {
                             <tbody>
                                 {transactions.length > 0 ? (
                                     transactions.map(tx => (
-                                        <tr key={tx.paymentId}>
-                                            <td className="font-mono" title={tx.paymentId}>
-                                                {tx.transactionRef || tx.paymentId?.substring(0, 8) || 'N/A'}
+                                        <tr key={`${tx.source}-${tx.id}`}>
+                                            <td className="font-mono" title={tx.id}>
+                                                {tx.transactionRef || tx.id?.substring(0, 8) || 'N/A'}
+                                            </td>
+                                            <td>
+                                                <span className="status-badge" style={{
+                                                    background: tx.source === 'Wallet' ? '#dbeafe' : '#fef3c7',
+                                                    color: tx.source === 'Wallet' ? '#1d4ed8' : '#b45309'
+                                                }}>
+                                                    {tx.activityType}
+                                                </span>
                                             </td>
                                             <td>{tx.userName || 'N/A'}</td>
+                                            <td style={{ fontSize: '13px', maxWidth: 280 }}>{tx.description || '-'}</td>
                                             <td style={{ fontWeight: 600 }}>{tx.amount?.toLocaleString()} đ</td>
-                                            <td>{tx.paymentMethod}</td>
+                                            <td>{tx.paymentMethod || '-'}</td>
                                             <td className="text-gray">{formatDateTime(tx.createdAt)}</td>
-                                            <td>{getStatusBadge(tx.paymentStatus)}</td>
+                                            <td>{getStatusBadge(tx.status || tx.paymentStatus)}</td>
                                             <td>
-                                                {tx.paymentStatus === 'Completed' && (
+                                                {tx.source === 'Payment' && (tx.status === 'Success' || tx.paymentStatus === 'Success') && (
                                                     <button
                                                         className="action-btn"
                                                         style={{ background: '#f3f4f6', color: '#374151' }}
-                                                        onClick={() => setRefundModal({ show: true, transactionId: tx.paymentId })}
+                                                        onClick={() => setRefundModal({ show: true, transactionId: tx.id, amount: tx.amount || 0 })}
                                                     >
                                                         <RefreshCw size={14} /> Hoàn tiền
                                                     </button>
@@ -140,7 +152,7 @@ const Transactions = () => {
                                         </tr>
                                     ))
                                 ) : (
-                                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>Không có giao dịch nào</td></tr>
+                                    <tr><td colSpan="9" style={{ textAlign: 'center', padding: '20px' }}>Không có giao dịch nào</td></tr>
                                 )}
                             </tbody>
                         </table>
@@ -150,7 +162,7 @@ const Transactions = () => {
 
             {/* Refund Modal */}
             {refundModal.show && (
-                <div className="modal-overlay" onClick={() => setRefundModal({ show: false, transactionId: null })}>
+                <div className="modal-overlay" onClick={() => setRefundModal({ show: false, transactionId: null, amount: 0 })}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <h3>Xác nhận hoàn tiền</h3>
                         <p>Nhập lý do hoàn tiền cho giao dịch này:</p>
@@ -160,7 +172,7 @@ const Transactions = () => {
                             style={{ width: '100%', minHeight: '80px', margin: '10px 0', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
                         />
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                            <button onClick={() => setRefundModal({ show: false, transactionId: null })} style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid #ccc', background: 'white' }}>Hủy</button>
+                            <button onClick={() => setRefundModal({ show: false, transactionId: null, amount: 0 })} style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid #ccc', background: 'white' }}>Hủy</button>
                             <button onClick={handleRefund} disabled={actionLoading} style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', background: '#dc2626', color: 'white' }}>
                                 {actionLoading ? 'Đang xử lý...' : 'Hoàn tiền'}
                             </button>
