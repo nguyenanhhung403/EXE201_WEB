@@ -13,6 +13,7 @@ const Reviews = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [ratingFilter, setRatingFilter] = useState('');
+    const [deleteLoading, setDeleteLoading] = useState(null);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -49,16 +50,21 @@ const Reviews = () => {
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (review) => {
+        const id = review.reviewId || review.id;
+        if (!id) return;
         if (!confirm('Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác.')) return;
 
+        setDeleteLoading(id);
         try {
             await api.admin.deleteReview(id);
-            alert('Đã xóa đánh giá thành công');
             fetchReviews();
+            alert('Đã xóa đánh giá thành công');
         } catch (error) {
-            console.error('Delete error:', error);
-            alert('Có lỗi xảy ra khi xóa đánh giá');
+            const msg = error?.response?.data?.message || error?.message || 'Có lỗi xảy ra khi xóa đánh giá';
+            alert(msg);
+        } finally {
+            setDeleteLoading(null);
         }
     };
 
@@ -108,7 +114,7 @@ const Reviews = () => {
                             <tbody>
                                 {reviews.length > 0 ? (
                                     reviews.map((review) => (
-                                        <tr key={review.id}>
+                                        <tr key={review.reviewId || review.id}>
                                             <td>
                                                 <div style={{ fontWeight: 500 }}>{review.userName || 'Người dùng ẩn danh'}</div>
                                             </td>
@@ -134,10 +140,16 @@ const Reviews = () => {
                                             <td>
                                                 <button
                                                     className="action-btn reject"
-                                                    onClick={() => handleDelete(review.id)}
+                                                    onClick={() => handleDelete(review)}
+                                                    disabled={deleteLoading === (review.reviewId || review.id)}
                                                     title="Xóa đánh giá"
+                                                    style={{ opacity: deleteLoading === (review.reviewId || review.id) ? 0.6 : 1, cursor: deleteLoading ? 'not-allowed' : 'pointer' }}
                                                 >
-                                                    <Trash2 size={16} />
+                                                    {deleteLoading === (review.reviewId || review.id) ? (
+                                                        <span style={{ fontSize: '12px' }}>Đang xóa...</span>
+                                                    ) : (
+                                                        <Trash2 size={16} />
+                                                    )}
                                                 </button>
                                             </td>
                                         </tr>

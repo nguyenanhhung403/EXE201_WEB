@@ -18,6 +18,8 @@ const Users = () => {
         isActive: true,
         roleId: 1
     });
+    const [updateLoading, setUpdateLoading] = useState(false);
+    const [updateMessage, setUpdateMessage] = useState({ type: '', text: '' });
     const [pagination, setPagination] = useState({
         page: 1,
         pageSize: 20,
@@ -61,13 +63,19 @@ const Users = () => {
 
     const handleUpdateUser = async (e) => {
         e.preventDefault();
+        setUpdateLoading(true);
+        setUpdateMessage({ type: '', text: '' });
         try {
             await api.admin.updateUser(selectedUser.userId, formData);
             setShowModal(false);
-            fetchUsers(pagination.page); // Refresh user list
+            setUpdateMessage({ type: 'success', text: 'Đã cập nhật thông tin người dùng thành công' });
+            fetchUsers(pagination.page);
+            setTimeout(() => setUpdateMessage({ type: '', text: '' }), 4000);
         } catch (error) {
-            console.error("Failed to update user", error);
-            alert('Failed to update user');
+            const msg = error?.response?.data?.message || error?.message || 'Cập nhật thất bại. Vui lòng thử lại.';
+            setUpdateMessage({ type: 'error', text: msg });
+        } finally {
+            setUpdateLoading(false);
         }
     };
 
@@ -79,6 +87,18 @@ const Users = () => {
                 <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>Danh sách người dùng</h2>
                 </div>
+
+                {updateMessage.text && (
+                    <div style={{
+                        padding: '12px 16px',
+                        borderRadius: '8px',
+                        marginBottom: '16px',
+                        background: updateMessage.type === 'success' ? '#ecfdf5' : '#fef2f2',
+                        color: updateMessage.type === 'success' ? '#059669' : '#dc2626'
+                    }}>
+                        {updateMessage.text}
+                    </div>
+                )}
 
                 {loading ? (
                     <div className="admin-loading" style={{ height: '300px' }}>
@@ -271,18 +291,20 @@ const Users = () => {
                                 </button>
                                 <button
                                     type="submit"
+                                    disabled={updateLoading}
                                     style={{
                                         padding: '10px 20px',
                                         border: 'none',
                                         borderRadius: '8px',
                                         background: '#2563eb',
                                         color: 'white',
-                                        cursor: 'pointer',
+                                        cursor: updateLoading ? 'not-allowed' : 'pointer',
                                         fontSize: '14px',
-                                        fontWeight: '500'
+                                        fontWeight: '500',
+                                        opacity: updateLoading ? 0.7 : 1
                                     }}
                                 >
-                                    Update User
+                                    {updateLoading ? 'Đang cập nhật...' : 'Cập nhật'}
                                 </button>
                             </div>
                         </form>

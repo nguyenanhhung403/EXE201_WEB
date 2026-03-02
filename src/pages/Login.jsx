@@ -13,6 +13,7 @@ const Login = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         setFormData({
@@ -33,12 +34,14 @@ const Login = () => {
             // Save tokens
             api.auth.saveTokens(response.accessToken, response.refreshToken);
 
-            // Redirect based on role
-            if (response.user.role === 'Admin') {
-                navigate('/admin');
-            } else {
-                navigate('/dashboard');
-            }
+            setSuccess('Đăng nhập thành công! Đang chuyển hướng...');
+            setTimeout(() => {
+                if (response.user.role === 'Admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/dashboard');
+                }
+            }, 800);
         } catch (err) {
             setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
@@ -61,6 +64,12 @@ const Login = () => {
                     <div className="auth-error">
                         <AlertCircle size={20} />
                         <span>{error}</span>
+                    </div>
+                )}
+
+                {success && (
+                    <div className="auth-success" style={{ background: '#ecfdf5', color: '#059669', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>{success}</span>
                     </div>
                 )}
 

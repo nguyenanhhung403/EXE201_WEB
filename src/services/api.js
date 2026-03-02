@@ -97,6 +97,18 @@ const api = {
             const response = await axiosInstance.get(`/admin/parking-lots?page=${page}&pageSize=${pageSize}`);
             return response.data.data || response.data;
         },
+        updateParkingLot: async (id, data) => {
+            const response = await axiosInstance.put(`/admin/parking-lots/${id}`, data);
+            return response.data;
+        },
+        deleteParkingLot: async (id) => {
+            const response = await axiosInstance.delete(`/admin/parking-lots/${id}`);
+            return response.data;
+        },
+        toggleActiveParkingLot: async (id) => {
+            const response = await axiosInstance.patch(`/admin/parking-lots/${id}/toggle-active`);
+            return response.data;
+        },
         updateUser: async (id, userData) => {
             const response = await axiosInstance.put(`/admin/users/${id}`, userData);
             return response.data;
