@@ -26,7 +26,7 @@ const HelpCenter = () => {
 
                         <div className="faq-item">
                             <h3>Các phương thức thanh toán được hỗ trợ?</h3>
-                            <p>Synergy hỗ trợ thanh toán qua thẻ tín dụng/ghi nợ, ví điện tử (MoMo, ZaloPay, VNPay) và thanh toán tự động khi bạn rời khỏi bãi đỗ.</p>
+                            <p>Synergy hỗ trợ thanh toán qua thẻ tín dụng/ghi nợ, ví điện tử (MoMo, ZaloPay, SePay) và thanh toán tự động khi bạn rời khỏi bãi đỗ.</p>
                         </div>
 
                         <div className="faq-item">
