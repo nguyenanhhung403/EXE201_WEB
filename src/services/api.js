@@ -109,6 +109,10 @@ const api = {
             const response = await axiosInstance.patch(`/admin/parking-lots/${id}/toggle-active`);
             return response.data;
         },
+        approveParkingLot: async (id) => {
+            const response = await axiosInstance.post(`/admin/parking-lots/${id}/approve`);
+            return response.data.data || response.data;
+        },
         updateUser: async (id, userData) => {
             const response = await axiosInstance.put(`/admin/users/${id}`, userData);
             return response.data;

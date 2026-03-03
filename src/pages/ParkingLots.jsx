@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Car, DollarSign, Plus, Pencil, Trash2, Power, X, Loader } from 'lucide-react';
+import { MapPin, Car, DollarSign, Plus, Pencil, Trash2, Power, X, Loader, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
@@ -75,6 +75,21 @@ const ParkingLots = () => {
             showMessage('success', updated?.isActive ? 'Bãi xe đã được kích hoạt' : 'Bãi xe đã tạm dừng');
         } catch (err) {
             const msg = err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái';
+            showMessage('error', msg);
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleApprove = async (lot) => {
+        if (!confirm(`Duyệt bãi xe "${lot.name}" để hiển thị công khai?`)) return;
+        setActionLoading(lot.parkingLotId);
+        try {
+            await api.admin.approveParkingLot(lot.parkingLotId);
+            showMessage('success', 'Đã duyệt bãi xe thành công');
+            fetchParkingLots(pagination.page);
+        } catch (err) {
+            const msg = err?.response?.data?.message || err?.message || 'Không thể duyệt bãi xe';
             showMessage('error', msg);
         } finally {
             setActionLoading(null);
@@ -160,7 +175,7 @@ const ParkingLots = () => {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                         <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>{lot.name}</h3>
                                         <span className={`status-badge ${lot.status === 'Active' ? 'payment' : 'pending'}`}>
-                                            {lot.status}
+                                            {lot.status === 'Pending' ? 'Chờ duyệt' : lot.status}
                                         </span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000', fontSize: '14px', marginBottom: '8px' }}>
@@ -180,7 +195,17 @@ const ParkingLots = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{ padding: '15px 20px', borderTop: '1px solid #e5e7eb', background: '#f9fafb', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                <div style={{ padding: '15px 20px', borderTop: '1px solid #e5e7eb', background: '#f9fafb', display: 'flex', justifyContent: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
+                                    {(lot.status === 'Pending' || lot.status === 'Chờ duyệt') && (
+                                        <button
+                                            onClick={() => handleApprove(lot)}
+                                            disabled={!!actionLoading}
+                                            style={{ padding: '6px 12px', borderRadius: '4px', border: 'none', background: '#10b981', color: 'white', fontSize: '13px', cursor: actionLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                        >
+                                            {actionLoading === lot.parkingLotId ? <Loader size={14} /> : <CheckCircle size={14} />}
+                                            Duyệt
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => handleEditClick(lot)}
                                         disabled={!!actionLoading}

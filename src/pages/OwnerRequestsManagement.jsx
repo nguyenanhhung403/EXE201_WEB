@@ -50,9 +50,9 @@ const OwnerRequestsManagement = () => {
         try {
             const response = await api.admin.getOwnerUpgradeRequests(statusFilter, 1, 50);
             if (response) {
-                // Backend returns PagedResult: { items, page, pageSize, totalCount }
-                const data = response.items ?? response.data ?? (Array.isArray(response) ? response : []);
-                setRequests(Array.isArray(data) ? data : []);
+                // Backend returns PagedResult: { items, page, pageSize, totalCount } hoặc nested trong data
+                const items = response.items ?? response.data?.items ?? response.data ?? (Array.isArray(response) ? response : []);
+                setRequests(Array.isArray(items) ? items : []);
             } else {
                 setRequests([]);
             }
@@ -118,7 +118,7 @@ const OwnerRequestsManagement = () => {
     };
 
     const canApproveOrReject = (status) =>
-        status === 'PendingApproval' || status === 'Pending';
+        status === 'PendingApproval' || status === 'Pending' || status === 'PendingPayment';
 
     return (
         <AdminLayout title="Quản lý yêu cầu làm chủ bãi xe" subtitle="Duyệt hoặc từ chối yêu cầu nâng cấp tài khoản">
@@ -193,7 +193,16 @@ const OwnerRequestsManagement = () => {
                                         </tr>
                                     ))
                                 ) : (
-                                    <tr><td colSpan="10" style={{ textAlign: 'center', padding: '40px' }}>Không có yêu cầu nào</td></tr>
+                                    <tr>
+                                        <td colSpan="10" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                                            Không có yêu cầu nào
+                                            {statusFilter === STATUS_PENDING_APPROVAL && (
+                                                <div style={{ marginTop: '12px', fontSize: '0.9rem' }}>
+                                                    Thử tab <strong>Tất cả</strong> để xem toàn bộ. Nếu vẫn trống, kiểm tra: Backend đã deploy/restart chưa? Web và app dùng cùng API URL?
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
                                 )}
                             </tbody>
                         </table>
