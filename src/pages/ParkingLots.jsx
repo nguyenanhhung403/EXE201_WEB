@@ -124,6 +124,9 @@ const ParkingLots = () => {
             <div className="content-section">
                 <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>Tất cả bãi đỗ xe</h2>
+                    <button className="primary-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Plus size={18} /> Add New Lot
+                    </button>
                 </div>
 
                 {message.text && (
@@ -137,10 +140,6 @@ const ParkingLots = () => {
                         {message.text}
                     </div>
                 )}
-                    <button className="primary-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Plus size={18} /> Add New Lot
-                    </button>
-                </div>
 
                 {loading ? (
                     <div className="admin-loading" style={{ height: '300px' }}>
