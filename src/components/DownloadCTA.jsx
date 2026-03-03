@@ -1,42 +1,55 @@
 import React from 'react';
-import { Download, Smartphone, Star } from 'lucide-react';
+import { Download, Star, CheckCircle, Smartphone, Apple } from 'lucide-react';
 import '../styles/DownloadCTA.css';
 
 const DownloadCTA = () => {
     return (
         <section className="download-cta-section">
+            {/* Background decorations */}
+            <div className="cta-bg-orb cta-orb-1" />
+            <div className="cta-bg-orb cta-orb-2" />
+            <div className="cta-grid-lines" />
+
             <div className="container">
                 <div className="download-content">
+                    {/* Left: text */}
                     <div className="download-text">
                         <div className="badge-container">
                             <span className="trending-badge">
-                                <Star size={16} fill="#fbbf24" color="#fbbf24" />
+                                <Star size={14} fill="#fbbf24" color="#fbbf24" />
                                 Trending #1 Parking App
                             </span>
                         </div>
+
                         <h2 className="download-title">
                             Tải Synergy<br />
                             <span className="gradient-text">Bắt đầu kiếm tiền ngay!</span>
                         </h2>
+
                         <p className="download-description">
-                            Miễn phí 100%. Không phí ẩn. Hoa hồng thấp nhất thị trường.<br />
+                            Miễn phí 100% · Không phí ẩn · Hoa hồng thấp nhất thị trường.<br />
                             Hơn 10,000+ downloads trong tháng đầu!
                         </p>
 
+                        <ul className="feature-checklist">
+                            {['Đăng tin miễn phí', 'Cancellation policy linh hoạt', 'Thu tiền ngay sau mỗi booking'].map((item, i) => (
+                                <li key={i}>
+                                    <CheckCircle size={16} className="check-icon" />
+                                    <span>{item}</span>
+                                </li>
+                            ))}
+                        </ul>
+
                         <div className="download-buttons">
                             <a href="#" className="download-btn app-store">
-                                <div className="btn-icon">
-                                    <Download size={24} />
-                                </div>
+                                <div className="btn-icon"><Apple size={22} /></div>
                                 <div className="btn-text">
                                     <span className="btn-label">Download on the</span>
                                     <span className="btn-store">App Store</span>
                                 </div>
                             </a>
                             <a href="#" className="download-btn google-play">
-                                <div className="btn-icon">
-                                    <Download size={24} />
-                                </div>
+                                <div className="btn-icon"><Download size={22} /></div>
                                 <div className="btn-text">
                                     <span className="btn-label">Get it on</span>
                                     <span className="btn-store">Google Play</span>
@@ -46,24 +59,40 @@ const DownloadCTA = () => {
 
                         <div className="stats-row">
                             <div className="stat-item-cta">
-                                <strong>4.8★</strong>
-                                <span>Rating</span>
+                                <strong>4.8★</strong><span>App Rating</span>
                             </div>
+                            <div className="stat-divider" />
                             <div className="stat-item-cta">
-                                <strong>10K+</strong>
-                                <span>Downloads</span>
+                                <strong>10K+</strong><span>Downloads</span>
                             </div>
+                            <div className="stat-divider" />
                             <div className="stat-item-cta">
-                                <strong>100%</strong>
-                                <span>Free</span>
+                                <strong>100%</strong><span>Miễn phí</span>
                             </div>
                         </div>
                     </div>
 
+                    {/* Right: visual */}
                     <div className="download-visual">
-                        <div className="phone-mockup">
-                            <Smartphone size={280} color="#6366f1" strokeWidth={1.5} />
-                            <div className="phone-glow"></div>
+                        <div className="cta-phone-wrap">
+                            <div className="cta-phone-glow" />
+                            <div className="cta-notification notif-1">
+                                <span className="notif-icon">🔔</span>
+                                <div>
+                                    <div className="notif-title">Booking mới!</div>
+                                    <div className="notif-sub">Nguyễn Văn A · 2 giờ · 30,000đ</div>
+                                </div>
+                            </div>
+                            <div className="cta-notification notif-2">
+                                <span className="notif-icon">💰</span>
+                                <div>
+                                    <div className="notif-title">Thanh toán thành công</div>
+                                    <div className="notif-sub">+25,000đ vào ví Synergy</div>
+                                </div>
+                            </div>
+                            <div className="cta-phone-circle">
+                                <Smartphone size={140} strokeWidth={1} color="white" />
+                            </div>
                         </div>
                     </div>
                 </div>
