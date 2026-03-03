@@ -89,7 +89,11 @@ const api = {
             return response.data.data || response.data;
         },
         getUsers: async (page = 1, pageSize = 20, filters = {}) => {
-            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const params = new URLSearchParams({ page, pageSize });
+            if (filters.search) params.append('search', filters.search);
+            if (filters.roleName) params.append('roleName', filters.roleName);
+            if (filters.isActive !== undefined && filters.isActive !== '') params.append('isActive', filters.isActive);
+            if (filters.emailConfirmed !== undefined) params.append('emailConfirmed', filters.emailConfirmed);
             const response = await axiosInstance.get(`/admin/users?${params}`);
             return response.data.data || response.data;
         },
@@ -119,9 +123,17 @@ const api = {
             const response = await axiosInstance.post(`/admin/parking-lots/${id}/approve`);
             return response.data.data || response.data;
         },
+        getUser: async (id) => {
+            const response = await axiosInstance.get(`/admin/users/${id}`);
+            return response.data.data || response.data;
+        },
         updateUser: async (id, userData) => {
             const response = await axiosInstance.put(`/admin/users/${id}`, userData);
-            return response.data;
+            return response.data.data || response.data;
+        },
+        toggleUserActive: async (id) => {
+            const response = await axiosInstance.patch(`/admin/users/${id}/toggle-active`);
+            return response.data.data || response.data;
         },
         // New summary methods (activities = Payment + Wallet)
         getTotalTransactions: async () => {

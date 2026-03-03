@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Car, DollarSign, Plus, Pencil, Trash2, Power, X, Loader, CheckCircle } from 'lucide-react';
 import api from '../services/api';
+import { getParkingLotImage } from '../utils/images';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -17,7 +18,7 @@ const ParkingLots = () => {
     const [actionLoading, setActionLoading] = useState(null);
     const [message, setMessage] = useState({ type: '', text: '' });
     const [editModal, setEditModal] = useState(null);
-    const [editForm, setEditForm] = useState({ name: '', address: '', totalCapacity: '', pricePerHour: '', isActive: true });
+    const [editForm, setEditForm] = useState({ name: '', address: '', totalCapacity: '', pricePerHour: '', imageUrl: '', isActive: true });
     const [editSaving, setEditSaving] = useState(false);
     const [pagination, setPagination] = useState({
         page: 1,
@@ -112,6 +113,7 @@ const ParkingLots = () => {
             address: lot.address || '',
             totalCapacity: String(lot.totalCapacity ?? ''),
             pricePerHour: String(lot.pricePerHour ?? ''),
+            imageUrl: lot.imageUrl || '',
             isActive: lot.isActive ?? true
         });
     };
@@ -119,6 +121,16 @@ const ParkingLots = () => {
     const handleEditSave = async (e) => {
         e.preventDefault();
         if (!editModal) return;
+        const cap = parseInt(editForm.totalCapacity, 10);
+        const price = parseFloat(editForm.pricePerHour);
+        if (isNaN(cap) || cap < 1 || cap > 10000) {
+            alert('Sức chứa phải từ 1 đến 10000');
+            return;
+        }
+        if (isNaN(price) || price < 0) {
+            alert('Giá/giờ phải lớn hơn 0');
+            return;
+        }
         setEditSaving(true);
         try {
             await api.admin.updateParkingLot(editModal.parkingLotId, {
@@ -126,7 +138,8 @@ const ParkingLots = () => {
                 address: editForm.address.trim(),
                 totalCapacity: parseInt(editForm.totalCapacity, 10),
                 pricePerHour: parseFloat(editForm.pricePerHour),
-                isActive: editForm.isActive
+                isActive: editForm.isActive,
+                imageUrl: editForm.imageUrl?.trim() || null
             });
             showMessage('success', 'Đã cập nhật bãi xe thành công');
             setEditModal(null);
@@ -139,9 +152,6 @@ const ParkingLots = () => {
         }
     };
 
-    const getDefaultImage = () => {
-        return 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=1000';
-    };
 
     return (
         <AdminLayout title="Quản lý Bãi đỗ xe" subtitle={statusTab === TAB_PENDING ? 'Duyệt bãi xe mới tạo từ app (Chủ bãi → Bãi xe của tôi → Thêm)' : 'Danh sách tất cả bãi đỗ xe'}>
@@ -179,13 +189,14 @@ const ParkingLots = () => {
                     </div>
                 ) : parkingLots.length > 0 ? (
                     <div className="grid-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', marginTop: '20px' }}>
-                        {parkingLots.map((lot) => (
+                        {parkingLots.map((lot, idx) => (
                             <div key={lot.parkingLotId} className="card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ height: '160px', overflow: 'hidden', backgroundColor: '#f3f4f6' }}>
                                     <img
-                                        src={getDefaultImage()}
+                                        src={getParkingLotImage(lot, idx)}
                                         alt={lot.name}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        onError={(e) => { e.target.src = getParkingLotImage({}, idx); }}
                                     />
                                 </div>
                                 <div style={{ padding: '20px', flex: 1 }}>
@@ -285,6 +296,10 @@ const ParkingLots = () => {
                             <div className="parking-modal-field">
                                 <label>Địa chỉ</label>
                                 <input type="text" value={editForm.address} onChange={(e) => setEditForm({ ...editForm, address: e.target.value })} required placeholder="Nhập địa chỉ" />
+                            </div>
+                            <div className="parking-modal-field">
+                                <label>URL ảnh (tùy chọn)</label>
+                                <input type="url" value={editForm.imageUrl} onChange={(e) => setEditForm({ ...editForm, imageUrl: e.target.value })} placeholder="https://..." />
                             </div>
                             <div className="parking-modal-row">
                                 <div className="parking-modal-field">

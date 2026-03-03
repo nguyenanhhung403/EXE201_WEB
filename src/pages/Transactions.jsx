@@ -35,14 +35,11 @@ const Transactions = () => {
         setLoading(true);
         try {
             const filters = statusFilter ? { status: statusFilter } : {};
-            const response = await api.admin.getActivities(page, 20, filters);
-
-            if (response && response.items) {
-                setTransactions(response.items);
-                setTotal(response.totalCount);
-            } else if (Array.isArray(response)) {
-                setTransactions(response);
-            }
+            const res = await api.admin.getActivities(page, 20, filters);
+            const data = res?.data ?? res;
+            const items = data?.items ?? data?.Items ?? (Array.isArray(data) ? data : []);
+            setTransactions(Array.isArray(items) ? items : []);
+            setTotal(data?.totalCount ?? 0);
         } catch (error) {
             console.error('Failed to fetch transactions:', error);
         } finally {

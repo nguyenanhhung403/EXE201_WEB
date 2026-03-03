@@ -24,16 +24,16 @@ const Bookings = () => {
     const fetchBookings = useCallback(async (page) => {
         setLoading(true);
         try {
-            const data = await api.admin.getBookings(page, pagination.pageSize);
-            console.log('Bookings API Response:', data);
-
-            setBookings(data.items || []);
+            const res = await api.admin.getBookings(page, pagination.pageSize);
+            const data = res?.data ?? res;
+            const items = data?.items ?? data?.Items ?? (Array.isArray(data) ? data : []);
+            setBookings(Array.isArray(items) ? items : []);
             setPagination(prev => ({
                 ...prev,
-                page: data.page || 1,
-                pageSize: data.pageSize || 20,
-                totalCount: data.totalCount || 0,
-                totalPages: data.totalPages || 0
+                page: data?.page ?? 1,
+                pageSize: data?.pageSize ?? 20,
+                totalCount: data?.totalCount ?? 0,
+                totalPages: data?.totalPages ?? 1
             }));
         } catch (error) {
             console.error('Failed to fetch bookings:', error);
@@ -87,8 +87,8 @@ const Bookings = () => {
                                         </td>
                                         <td>
                                             <div style={{ display: 'flex', flexDirection: 'column', fontSize: '13px', gap: '2px' }}>
-                                                <span style={{ color: '#059669' }}>Vào: {formatDate(booking.checkInTime)}</span>
-                                                <span style={{ color: '#dc2626' }}>Ra: {formatDate(booking.checkOutTime)}</span>
+                                                <span style={{ color: '#059669' }}>Vào: {formatDate(booking.startTime || booking.checkInTime)}</span>
+                                                <span style={{ color: '#dc2626' }}>Ra: {formatDate(booking.endTime || booking.checkOutTime)}</span>
                                             </div>
                                         </td>
                                         <td style={{ fontWeight: '600', color: '#000000' }}>
@@ -113,8 +113,16 @@ const Bookings = () => {
                         </table>
                     </div>
                 ) : (
-                    <div style={{ padding: '40px', textAlign: 'center', color: '#000000' }}>
+                    <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
                         Không tìm thấy lượt đặt chỗ nào
+                    </div>
+                )}
+
+                {!loading && pagination.totalPages > 1 && (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', gap: '10px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '14px', color: '#6b7280' }}>Trang {pagination.page} / {pagination.totalPages}</span>
+                        <button onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} disabled={pagination.page <= 1} style={{ padding: '8px', border: '1px solid #e5e7eb', borderRadius: '6px', background: 'white', cursor: pagination.page <= 1 ? 'not-allowed' : 'pointer' }}>←</button>
+                        <button onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} disabled={pagination.page >= pagination.totalPages} style={{ padding: '8px', border: '1px solid #e5e7eb', borderRadius: '6px', background: 'white', cursor: pagination.page >= pagination.totalPages ? 'not-allowed' : 'pointer' }}>→</button>
                     </div>
                 )}
             </div>

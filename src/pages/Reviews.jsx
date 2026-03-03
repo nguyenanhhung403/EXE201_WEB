@@ -35,14 +35,12 @@ const Reviews = () => {
             const filters = {};
             if (ratingFilter) filters.rating = ratingFilter;
 
-            const response = await api.admin.getAllReviews(page, 20, filters);
-
-            if (response && response.items) {
-                setReviews(response.items);
-                setTotalPages(Math.ceil(response.totalCount / 20));
-            } else if (Array.isArray(response)) {
-                setReviews(response);
-            }
+            const res = await api.admin.getAllReviews(page, 20, filters);
+            const data = res?.data ?? res;
+            const items = data?.items ?? data?.Items ?? (Array.isArray(data) ? data : []);
+            setReviews(Array.isArray(items) ? items : []);
+            const total = data?.totalCount ?? 0;
+            setTotalPages(Math.max(1, Math.ceil(total / 20)));
         } catch (error) {
             console.error('Failed to fetch reviews:', error);
         } finally {
