@@ -146,11 +146,11 @@ const ParkingLots = () => {
     return (
         <AdminLayout title="Quản lý Bãi đỗ xe" subtitle={statusTab === TAB_PENDING ? 'Duyệt bãi xe mới tạo từ app (Chủ bãi → Bãi xe của tôi → Thêm)' : 'Danh sách tất cả bãi đỗ xe'}>
             <div className="content-section">
-                <div className="period-tabs" style={{ marginBottom: '20px' }}>
-                    <button className={`tab ${statusTab === TAB_PENDING ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_PENDING); setPagination(p => ({ ...p, page: 1 })); }}>
+                <div className="period-tabs parking-tabs" style={{ marginBottom: '20px' }}>
+                    <button type="button" className={`tab ${statusTab === TAB_PENDING ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_PENDING); setPagination(p => ({ ...p, page: 1 })); }}>
                         Chờ duyệt
                     </button>
-                    <button className={`tab ${statusTab === TAB_ALL ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_ALL); setPagination(p => ({ ...p, page: 1 })); }}>
+                    <button type="button" className={`tab ${statusTab === TAB_ALL ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_ALL); setPagination(p => ({ ...p, page: 1 })); }}>
                         Tất cả
                     </button>
                 </div>
@@ -192,7 +192,7 @@ const ParkingLots = () => {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                         <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#000000' }}>{lot.name}</h3>
                                         <span className={`status-badge ${lot.status === 'Active' ? 'payment' : 'pending'}`}>
-                                            {lot.status === 'Pending' ? 'Chờ duyệt' : lot.status}
+                                            {lot.status === 'Pending' ? 'Chờ duyệt' : lot.status === 'Active' ? 'Hoạt động' : lot.status}
                                         </span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#000000', fontSize: '14px', marginBottom: '8px' }}>
@@ -201,18 +201,18 @@ const ParkingLots = () => {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #e5e7eb' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <Car size={16} color="#4f46e5" />
-                                            <span style={{ fontWeight: '600' }}>{lot.totalCapacity}</span>
-                                            <span style={{ fontSize: '12px', color: '#000000' }}>Slots</span>
+                                            <span style={{ fontWeight: '600' }}>{lot.totalCapacity ?? '—'}</span>
+                                            <span style={{ fontSize: '12px', color: '#6b7280' }}>chỗ</span>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <DollarSign size={16} color="#059669" />
                                             <span style={{ fontWeight: '600', color: '#059669' }}>
-                                                {lot.pricePerHour.toLocaleString()} đ/h
+                                                {(lot.pricePerHour ?? 0).toLocaleString('vi-VN')} đ/h
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{ padding: '15px 20px', borderTop: '1px solid #e5e7eb', background: '#f9fafb', display: 'flex', justifyContent: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
+                                <div className="parking-card-actions">
                                     {(lot.status === 'Pending' || lot.status === 'Chờ duyệt') && (
                                         <button
                                             onClick={() => handleApprove(lot)}
@@ -263,40 +263,46 @@ const ParkingLots = () => {
 
             {/* Edit Modal */}
             {editModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '24px', width: '90%', maxWidth: '500px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '600' }}>Chỉnh sửa bãi xe</h2>
-                            <button onClick={() => setEditModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
+                <div
+                    className="parking-modal-overlay"
+                    onClick={() => setEditModal(null)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                >
+                    <div className="parking-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="parking-modal-header">
+                            <h2 id="modal-title">Chỉnh sửa bãi xe</h2>
+                            <button type="button" onClick={() => setEditModal(null)} className="parking-modal-close" aria-label="Đóng">
+                                <X size={22} />
+                            </button>
                         </div>
                         <form onSubmit={handleEditSave}>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '14px' }}>Tên bãi xe</label>
-                                <input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} required style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px' }} />
+                            <div className="parking-modal-field">
+                                <label>Tên bãi xe</label>
+                                <input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} required placeholder="Nhập tên bãi xe" />
                             </div>
-                            <div style={{ marginBottom: '16px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '14px' }}>Địa chỉ</label>
-                                <input type="text" value={editForm.address} onChange={(e) => setEditForm({ ...editForm, address: e.target.value })} required style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px' }} />
+                            <div className="parking-modal-field">
+                                <label>Địa chỉ</label>
+                                <input type="text" value={editForm.address} onChange={(e) => setEditForm({ ...editForm, address: e.target.value })} required placeholder="Nhập địa chỉ" />
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '14px' }}>Sức chứa</label>
-                                    <input type="number" min="1" value={editForm.totalCapacity} onChange={(e) => setEditForm({ ...editForm, totalCapacity: e.target.value })} required style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px' }} />
+                            <div className="parking-modal-row">
+                                <div className="parking-modal-field">
+                                    <label>Sức chứa (chỗ)</label>
+                                    <input type="number" min="1" max="10000" value={editForm.totalCapacity} onChange={(e) => setEditForm({ ...editForm, totalCapacity: e.target.value })} required placeholder="VD: 100" />
                                 </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '14px' }}>Giá/giờ (đ)</label>
-                                    <input type="number" min="0" step="1000" value={editForm.pricePerHour} onChange={(e) => setEditForm({ ...editForm, pricePerHour: e.target.value })} required style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px' }} />
+                                <div className="parking-modal-field">
+                                    <label>Giá/giờ (đ)</label>
+                                    <input type="number" min="0" step="1000" value={editForm.pricePerHour} onChange={(e) => setEditForm({ ...editForm, pricePerHour: e.target.value })} required placeholder="VD: 15000" />
                                 </div>
                             </div>
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                    <input type="checkbox" checked={editForm.isActive} onChange={(e) => setEditForm({ ...editForm, isActive: e.target.checked })} />
-                                    <span style={{ fontSize: '14px', fontWeight: '500' }}>Đang hoạt động</span>
-                                </label>
+                            <div className="parking-modal-checkbox">
+                                <input type="checkbox" id="edit-isActive" checked={editForm.isActive} onChange={(e) => setEditForm({ ...editForm, isActive: e.target.checked })} />
+                                <label htmlFor="edit-isActive">Đang hoạt động</label>
                             </div>
-                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                <button type="button" onClick={() => setEditModal(null)} style={{ padding: '10px 20px', border: '1px solid #e5e7eb', borderRadius: '8px', background: 'white', cursor: 'pointer' }}>Hủy</button>
-                                <button type="submit" disabled={editSaving} style={{ padding: '10px 20px', border: 'none', borderRadius: '8px', background: '#2563eb', color: 'white', cursor: editSaving ? 'not-allowed' : 'pointer' }}>
+                            <div className="parking-modal-actions">
+                                <button type="button" onClick={() => setEditModal(null)} className="parking-modal-btn-cancel">Hủy</button>
+                                <button type="submit" disabled={editSaving} className="parking-modal-btn-save">
                                     {editSaving ? 'Đang lưu...' : 'Lưu'}
                                 </button>
                             </div>
