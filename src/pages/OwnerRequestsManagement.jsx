@@ -204,18 +204,21 @@ const OwnerRequestsManagement = () => {
             {/* Reject Modal */}
             {showRejectModal && (
                 <div className="modal-overlay" onClick={() => setShowRejectModal(false)}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>Từ chối yêu cầu</h3>
-                        <p style={{ marginBottom: '10px', color: '#6b7280' }}>Người dùng: <strong>{selectedRequest?.fullName}</strong></p>
+                    <div className="modal-content reject-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="reject-modal-header">
+                            <h3>Từ chối yêu cầu</h3>
+                            <p className="reject-modal-user">Người dùng: <strong>{selectedRequest?.fullName}</strong></p>
+                        </div>
+                        <label className="reject-modal-label">Lý do từ chối</label>
                         <textarea
                             placeholder="Nhập lý do từ chối..."
                             value={rejectReason}
                             onChange={(e) => setRejectReason(e.target.value)}
-                            style={{ width: '100%', minHeight: '100px', padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', marginBottom: '20px' }}
+                            className="reject-modal-textarea"
                         />
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                            <button onClick={() => setShowRejectModal(false)} style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #e5e7eb', background: '#fff' }}>Hủy</button>
-                            <button onClick={handleReject} disabled={actionLoading} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#ef4444', color: '#fff' }}>
+                        <div className="reject-modal-actions">
+                            <button type="button" onClick={() => setShowRejectModal(false)} className="reject-modal-btn-cancel">Hủy</button>
+                            <button type="button" onClick={handleReject} disabled={actionLoading} className="reject-modal-btn-confirm">
                                 {actionLoading ? 'Đang xử lý...' : 'Xác nhận'}
                             </button>
                         </div>
@@ -223,8 +226,22 @@ const OwnerRequestsManagement = () => {
                 </div>
             )}
             <style jsx="true">{`
-                .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+                .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(2px); }
                 .modal-content { background: white; padding: 24px; border-radius: 12px; min-width: 400px; }
+                .reject-modal { max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid rgba(0,0,0,0.06); }
+                .reject-modal-header { margin-bottom: 16px; }
+                .reject-modal-header h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 600; color: #111827; }
+                .reject-modal-user { margin: 0; font-size: 0.875rem; color: #6b7280; }
+                .reject-modal-label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 8px; }
+                .reject-modal-textarea { width: 100%; min-height: 100px; padding: 12px 14px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 20px; font-size: 0.9375rem; color: #111827; background: #f9fafb; resize: vertical; font-family: inherit; }
+                .reject-modal-textarea::placeholder { color: #9ca3af; }
+                .reject-modal-textarea:focus { outline: none; border-color: #667eea; background: #fff; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15); }
+                .reject-modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+                .reject-modal-btn-cancel { padding: 10px 20px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; color: #374151; font-weight: 500; font-size: 0.9375rem; cursor: pointer; transition: all 0.2s; }
+                .reject-modal-btn-cancel:hover { background: #f9fafb; border-color: #9ca3af; }
+                .reject-modal-btn-confirm { padding: 10px 20px; border-radius: 8px; border: none; background: #ef4444; color: #fff; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: all 0.2s; }
+                .reject-modal-btn-confirm:hover:not(:disabled) { background: #dc2626; }
+                .reject-modal-btn-confirm:disabled { opacity: 0.7; cursor: not-allowed; }
                 .action-btn { padding: 6px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; }
                 .action-btn.approve { background: #10b981; color: white; }
                 .action-btn.reject { background: #ef4444; color: white; }

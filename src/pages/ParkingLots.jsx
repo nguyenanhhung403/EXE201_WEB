@@ -125,7 +125,7 @@ const ParkingLots = () => {
                 <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>Tất cả bãi đỗ xe</h2>
                     <button className="primary-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Plus size={18} /> Add New Lot
+                        <Plus size={18} /> Thêm bãi xe
                     </button>
                 </div>
 
@@ -210,7 +210,7 @@ const ParkingLots = () => {
                     </div>
                 ) : (
                     <div style={{ padding: '40px', textAlign: 'center', color: '#000000' }}>
-                        No parking lots found
+                        Không tìm thấy bãi xe nào
                     </div>
                 )}
 

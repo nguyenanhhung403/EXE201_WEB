@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Loader, AlertCircle } from 'lucide-react';
 import api from '../services/api';
+import { translateApiError } from '../utils/errorMessages';
 import logo from '../assets/logo.png';
 import '../styles/Auth.css';
 
@@ -43,7 +44,7 @@ const Login = () => {
                 }
             }, 800);
         } catch (err) {
-            setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+            setError(translateApiError(err.message) || 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
