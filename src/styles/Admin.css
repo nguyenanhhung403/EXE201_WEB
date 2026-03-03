@@ -254,6 +254,28 @@
     min-width: 0;
 }
 
+.stat-card.indigo .stat-icon {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.stat-card.yellow .stat-icon {
+    background: #fef9c3;
+    color: #ca8a04;
+}
+
+.stat-breakdown {
+    display: flex;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+.stat-breakdown .separator {
+    color: #9ca3af;
+}
+
 .stat-details {
     flex: 1;
 }
@@ -666,4 +688,197 @@
     .reviews-section {
         grid-column: auto;
     }
+}
+
+/* Parking Lots Modal */
+.parking-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.parking-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid #e5e7eb;
+}
+
+.parking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.parking-modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.parking-modal-close {
+    background: #f3f4f6;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: background 0.2s, color 0.2s;
+}
+
+.parking-modal-close:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.parking-modal-field {
+    margin-bottom: 16px;
+}
+
+.parking-modal-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.parking-modal-field input[type="text"],
+.parking-modal-field input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: #111827;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.parking-modal-field input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.parking-modal-field input::placeholder {
+    color: #9ca3af;
+}
+
+.parking-modal-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 480px) {
+    .parking-modal-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.parking-modal-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.parking-modal-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4f46e5;
+    cursor: pointer;
+}
+
+.parking-modal-checkbox label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+}
+
+.parking-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.parking-modal-btn-cancel {
+    padding: 10px 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.parking-modal-btn-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.parking-modal-btn-save {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #4f46e5;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.parking-modal-btn-save:hover:not(:disabled) {
+    background: #4338ca;
+}
+
+.parking-modal-btn-save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.parking-tabs .tab {
+    padding: 8px 16px;
+    font-size: 0.9375rem;
+}
+
+.parking-card-actions {
+    padding: 15px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.parking-card-actions button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }

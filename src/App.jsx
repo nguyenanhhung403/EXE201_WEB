@@ -15,10 +15,12 @@ import Admin from './pages/Admin';
 import Users from './pages/Users';
 import ParkingLots from './pages/ParkingLots';
 import Bookings from './pages/Bookings';
-import Reviews from './pages/Reviews';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
+import OwnerRequestsManagement from './pages/OwnerRequestsManagement';
+import Reviews from './pages/Reviews';
+import Transactions from './pages/Transactions';
 
 function App() {
   return (
@@ -37,7 +39,9 @@ function App() {
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/parking-lots" element={<ParkingLots />} />
           <Route path="/admin/bookings" element={<Bookings />} />
+          <Route path="/admin/owner-requests" element={<OwnerRequestsManagement />} />
           <Route path="/admin/reviews" element={<Reviews />} />
+          <Route path="/admin/transactions" element={<Transactions />} />
         </Routes>
       </Router>
     </HelmetProvider>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Loader, AlertCircle } from 'lucide-react';
 import api from '../services/api';
+import { translateApiError } from '../utils/errorMessages';
 import logo from '../assets/logo.png';
 import '../styles/Auth.css';
 
@@ -13,6 +14,7 @@ const Login = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
         setFormData({
@@ -33,14 +35,16 @@ const Login = () => {
             // Save tokens
             api.auth.saveTokens(response.accessToken, response.refreshToken);
 
-            // Redirect based on role
-            if (response.user.role === 'Admin') {
-                navigate('/admin');
-            } else {
-                navigate('/dashboard');
-            }
+            setSuccess('Đăng nhập thành công! Đang chuyển hướng...');
+            setTimeout(() => {
+                if (response.user.role === 'Admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/dashboard');
+                }
+            }, 800);
         } catch (err) {
-            setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+            setError(translateApiError(err.message) || 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
@@ -61,6 +65,12 @@ const Login = () => {
                     <div className="auth-error">
                         <AlertCircle size={20} />
                         <span>{error}</span>
+                    </div>
+                )}
+
+                {success && (
+                    <div className="auth-success" style={{ background: '#ecfdf5', color: '#059669', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>{success}</span>
                     </div>
                 )}
 
