@@ -5,9 +5,14 @@ import api from '../services/api';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
+const TAB_ALL = 'all';
+const TAB_PENDING = 'pending';
+
 const ParkingLots = () => {
     const navigate = useNavigate();
+    const [statusTab, setStatusTab] = useState(TAB_PENDING); // Mặc định "Chờ duyệt" - bãi xe mới tạo từ app
     const [parkingLots, setParkingLots] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null);
     const [message, setMessage] = useState({ type: '', text: '' });
@@ -23,28 +28,32 @@ const ParkingLots = () => {
 
     useEffect(() => {
         fetchParkingLots(pagination.page);
-    }, [pagination.page]); // Fixed dependency array
+    }, [pagination.page, statusTab]);
 
     const fetchParkingLots = useCallback(async (page) => {
         setLoading(true);
+        setFetchError(null);
         try {
-            const data = await api.admin.getParkingLots(page, pagination.pageSize);
-            console.log('Parking Lots API Response:', data);
-
-            setParkingLots(data.items || []);
+            const res = statusTab === TAB_PENDING
+                ? await api.admin.getPendingParkingLots(page, pagination.pageSize)
+                : await api.admin.getParkingLots(page, pagination.pageSize, '');
+            const data = res?.data ?? res;
+            const items = data?.items ?? data?.Items ?? (Array.isArray(data) ? data : []);
+            setParkingLots(Array.isArray(items) ? items : []);
             setPagination(prev => ({
                 ...prev,
-                page: data.page || 1,
-                pageSize: data.pageSize || 20,
-                totalCount: data.totalCount || 0,
-                totalPages: data.totalPages || 0
+                page: data?.page ?? 1,
+                pageSize: data?.pageSize ?? 20,
+                totalCount: data?.totalCount ?? 0,
+                totalPages: data?.totalPages ?? 0
             }));
         } catch (error) {
             console.error('Failed to fetch parking lots:', error);
+            setFetchError(error?.response?.data?.message || error?.message || 'Lỗi khi tải. Kiểm tra đăng nhập Admin và API URL (Web/App dùng cùng backend).');
         } finally {
             setLoading(false);
         }
-    }, [pagination.pageSize]);
+    }, [pagination.pageSize, statusTab]);
 
     const showMessage = (type, text) => {
         setMessage({ type, text });
@@ -135,10 +144,18 @@ const ParkingLots = () => {
     };
 
     return (
-        <AdminLayout title="Quản lý Bãi đỗ xe" subtitle="Danh sách tất cả bãi đỗ xe">
+        <AdminLayout title="Quản lý Bãi đỗ xe" subtitle={statusTab === TAB_PENDING ? 'Duyệt bãi xe mới tạo từ app (Chủ bãi → Bãi xe của tôi → Thêm)' : 'Danh sách tất cả bãi đỗ xe'}>
             <div className="content-section">
+                <div className="period-tabs" style={{ marginBottom: '20px' }}>
+                    <button className={`tab ${statusTab === TAB_PENDING ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_PENDING); setPagination(p => ({ ...p, page: 1 })); }}>
+                        Chờ duyệt
+                    </button>
+                    <button className={`tab ${statusTab === TAB_ALL ? 'active' : ''}`} onClick={() => { setStatusTab(TAB_ALL); setPagination(p => ({ ...p, page: 1 })); }}>
+                        Tất cả
+                    </button>
+                </div>
                 <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2>Tất cả bãi đỗ xe</h2>
+                    <h2>{statusTab === TAB_PENDING ? 'Bãi xe chờ duyệt' : 'Tất cả bãi đỗ xe'}</h2>
                     <button className="primary-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Plus size={18} /> Thêm bãi xe
                     </button>
@@ -235,7 +252,12 @@ const ParkingLots = () => {
                     </div>
                 ) : (
                     <div style={{ padding: '40px', textAlign: 'center', color: '#000000' }}>
-                        Không tìm thấy bãi xe nào
+                        {fetchError ? (
+                            <p style={{ color: '#dc2626', marginBottom: '8px' }}>{fetchError}</p>
+                        ) : null}
+                        {statusTab === TAB_PENDING
+                            ? 'Không có bãi xe nào chờ duyệt. Bãi xe tạo từ app (Chủ bãi → Bãi xe của tôi → Thêm) sẽ hiện ở đây. Đảm bảo Web và App dùng cùng API URL.'
+                            : 'Không tìm thấy bãi xe nào'}
                     </div>
                 )}
 

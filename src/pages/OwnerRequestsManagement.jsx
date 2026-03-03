@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { CheckCircle, XCircle, MapPin } from 'lucide-react';
 import api from '../services/api';
 import { formatDateTime } from '../utils/helpers';
 import '../styles/Admin.css';
@@ -196,11 +196,19 @@ const OwnerRequestsManagement = () => {
                                     <tr>
                                         <td colSpan="10" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
                                             Không có yêu cầu nào
-                                            {statusFilter === STATUS_PENDING_APPROVAL && (
-                                                <div style={{ marginTop: '12px', fontSize: '0.9rem' }}>
-                                                    Thử tab <strong>Tất cả</strong> để xem toàn bộ. Nếu vẫn trống, kiểm tra: Backend đã deploy/restart chưa? Web và app dùng cùng API URL?
-                                                </div>
-                                            )}
+                                            <div style={{ marginTop: '16px', fontSize: '0.9rem', maxWidth: '480px', margin: '16px auto 0' }}>
+                                                <p style={{ margin: '0 0 12px 0', fontWeight: 500, color: '#374151' }}>
+                                                    Bãi xe tạo từ <strong>Bãi xe của tôi → Thêm</strong> (app) <strong>không hiện ở đây</strong>.
+                                                </p>
+                                                <Link to="/admin/parking-lots" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: '#4f46e5', color: 'white', borderRadius: '8px', textDecoration: 'none', fontWeight: 500, marginTop: '8px' }}>
+                                                    <MapPin size={18} /> Vào Bãi đỗ xe → tab Chờ duyệt
+                                                </Link>
+                                                {statusFilter === STATUS_PENDING_APPROVAL && (
+                                                    <p style={{ margin: '12px 0 0 0', fontSize: '0.85rem' }}>
+                                                        Thử tab Tất cả. Nếu vẫn trống: Backend đã deploy? Web và app dùng cùng API URL?
+                                                    </p>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 )}

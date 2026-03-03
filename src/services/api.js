@@ -93,8 +93,14 @@ const api = {
             const response = await axiosInstance.get(`/admin/users?${params}`);
             return response.data.data || response.data;
         },
-        getParkingLots: async (page = 1, pageSize = 20) => {
-            const response = await axiosInstance.get(`/admin/parking-lots?page=${page}&pageSize=${pageSize}`);
+        getParkingLots: async (page = 1, pageSize = 20, status = '') => {
+            const params = new URLSearchParams({ page, pageSize });
+            if (status) params.append('status', status);
+            const response = await axiosInstance.get(`/admin/parking-lots?${params}`);
+            return response.data.data || response.data;
+        },
+        getPendingParkingLots: async (page = 1, pageSize = 20) => {
+            const response = await axiosInstance.get(`/admin/parking-lots/pending?page=${page}&pageSize=${pageSize}`);
             return response.data.data || response.data;
         },
         updateParkingLot: async (id, data) => {
