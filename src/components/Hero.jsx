@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Download, ChevronRight, MapPin, Star, Shield, Zap } from 'lucide-react';
+import { Download, ChevronRight, MapPin, Star, Shield, Zap, Smartphone } from 'lucide-react';
 import '../styles/Hero.css';
 
 const Hero = () => {
@@ -77,12 +77,17 @@ const Hero = () => {
                     </p>
 
                     <div className="hero-buttons">
-                        <button className="btn btn-primary-glow icon-btn">
-                            <Download size={18} /> App Store
-                        </button>
-                        <button className="btn btn-glass icon-btn">
-                            <Download size={18} /> Google Play
-                        </button>
+                        <a
+                            href="https://expo.dev/accounts/truongduyyyy/projects/bai-giu-xe-thong-minh/builds/dc546f52-113e-43e4-b956-64d934d7ca19"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-primary-glow icon-btn"
+                        >
+                            <Smartphone size={18} /> Tải APK Android
+                        </a>
+                        <a href="#features" className="btn btn-glass icon-btn">
+                            <ChevronRight size={18} /> Tìm hiểu thêm
+                        </a>
                     </div>
 
                     <div className="hero-trust">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Star, CheckCircle, Smartphone, Apple } from 'lucide-react';
+import { Download, Star, CheckCircle, Smartphone } from 'lucide-react';
 import '../styles/DownloadCTA.css';
 
 const DownloadCTA = () => {
@@ -41,20 +41,26 @@ const DownloadCTA = () => {
                         </ul>
 
                         <div className="download-buttons">
-                            <a href="#" className="download-btn app-store">
-                                <div className="btn-icon"><Apple size={22} /></div>
+                            <a
+                                href="https://expo.dev/accounts/truongduyyyy/projects/bai-giu-xe-thong-minh/builds/dc546f52-113e-43e4-b956-64d934d7ca19"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="download-btn android-apk"
+                            >
+                                <div className="btn-icon"><Smartphone size={22} /></div>
                                 <div className="btn-text">
-                                    <span className="btn-label">Download on the</span>
-                                    <span className="btn-store">App Store</span>
+                                    <span className="btn-label">Tải ngay</span>
+                                    <span className="btn-store">Android APK</span>
                                 </div>
                             </a>
-                            <a href="#" className="download-btn google-play">
+                            <div className="download-btn ios-coming">
                                 <div className="btn-icon"><Download size={22} /></div>
                                 <div className="btn-text">
-                                    <span className="btn-label">Get it on</span>
-                                    <span className="btn-store">Google Play</span>
+                                    <span className="btn-label">Sắp có</span>
+                                    <span className="btn-store">iOS App</span>
                                 </div>
-                            </a>
+                                <span className="coming-soon-tag">Coming soon</span>
+                            </div>
                         </div>
 
                         <div className="stats-row">
