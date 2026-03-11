@@ -863,6 +863,68 @@
     font-size: 0.9375rem;
 }
 
+.parking-filters {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.parking-filters-left {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.parking-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 220px;
+}
+
+.parking-filter label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.parking-filter select {
+    height: 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-weight: 600;
+    color: #111827;
+    background: #fff;
+}
+
+.parking-filters-clear {
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #374151;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.parking-filters-clear:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.parking-filters-clear:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
 .parking-card-actions {
     padding: 15px 20px;
     border-top: 1px solid #e5e7eb;

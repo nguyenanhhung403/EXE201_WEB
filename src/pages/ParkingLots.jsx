@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, Car, DollarSign, Plus, Pencil, Trash2, Power, X, Loader, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import { getParkingLotImage } from '../utils/images';
+import { getProvincesWithWards } from '../services/vnAdminUnits';
 import '../styles/Admin.css';
 import AdminLayout from '../components/AdminLayout';
 
@@ -20,6 +21,9 @@ const ParkingLots = () => {
     const [editModal, setEditModal] = useState(null);
     const [editForm, setEditForm] = useState({ name: '', address: '', totalCapacity: '', pricePerHour: '', imageUrl: '', isActive: true });
     const [editSaving, setEditSaving] = useState(false);
+    const [unitsLoading, setUnitsLoading] = useState(false);
+    const [provinces, setProvinces] = useState([]);
+    const [filters, setFilters] = useState({ provinceCode: '', wardCode: '' });
     const [pagination, setPagination] = useState({
         page: 1,
         pageSize: 20,
@@ -29,15 +33,39 @@ const ParkingLots = () => {
 
     useEffect(() => {
         fetchParkingLots(pagination.page);
-    }, [pagination.page, statusTab]);
+    }, [pagination.page, statusTab, filters.provinceCode, filters.wardCode]);
+
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                setUnitsLoading(true);
+                const list = await getProvincesWithWards();
+                if (!mounted) return;
+                setProvinces(list);
+            } catch (_) {
+                if (!mounted) return;
+                setProvinces([]);
+            } finally {
+                if (mounted) setUnitsLoading(false);
+            }
+        })();
+        return () => { mounted = false; };
+    }, []);
+
+    const selectedProvince = provinces.find((p) => String(p.code) === String(filters.provinceCode));
+    const wardItems = selectedProvince?.wards || [];
 
     const fetchParkingLots = useCallback(async (page) => {
         setLoading(true);
         setFetchError(null);
         try {
+            const hasUnitFilter = !!filters.provinceCode || !!filters.wardCode;
             const res = statusTab === TAB_PENDING
-                ? await api.admin.getPendingParkingLots(page, pagination.pageSize)
-                : await api.admin.getParkingLots(page, pagination.pageSize, '');
+                ? (hasUnitFilter
+                    ? await api.admin.getParkingLots(page, pagination.pageSize, { status: 'Pending', ...filters })
+                    : await api.admin.getPendingParkingLots(page, pagination.pageSize))
+                : await api.admin.getParkingLots(page, pagination.pageSize, { status: '', ...filters });
             const data = res?.data ?? res;
             const items = data?.items ?? data?.Items ?? (Array.isArray(data) ? data : []);
             setParkingLots(Array.isArray(items) ? items : []);
@@ -54,7 +82,7 @@ const ParkingLots = () => {
         } finally {
             setLoading(false);
         }
-    }, [pagination.pageSize, statusTab]);
+    }, [pagination.pageSize, statusTab, filters.provinceCode, filters.wardCode, provinces]);
 
     const showMessage = (type, text) => {
         setMessage({ type, text });
@@ -164,6 +192,57 @@ const ParkingLots = () => {
                         Tất cả
                     </button>
                 </div>
+
+                <div className="parking-filters">
+                    <div className="parking-filters-left">
+                        <div className="parking-filter">
+                            <label>Tỉnh/TP</label>
+                            <select
+                                value={filters.provinceCode}
+                                onChange={(e) => {
+                                    const v = e.target.value;
+                                    setFilters({ provinceCode: v, wardCode: '' });
+                                    setPagination(p => ({ ...p, page: 1 }));
+                                }}
+                                disabled={unitsLoading}
+                            >
+                                <option value="">{unitsLoading ? 'Đang tải...' : 'Tất cả'}</option>
+                                {provinces.map((p) => (
+                                    <option key={String(p.code)} value={String(p.code)}>{p.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="parking-filter">
+                            <label>Xã/Phường</label>
+                            <select
+                                value={filters.wardCode}
+                                onChange={(e) => {
+                                    setFilters(prev => ({ ...prev, wardCode: e.target.value }));
+                                    setPagination(p => ({ ...p, page: 1 }));
+                                }}
+                                disabled={!filters.provinceCode}
+                            >
+                                <option value="">{filters.provinceCode ? 'Tất cả' : 'Chọn Tỉnh/TP trước'}</option>
+                                {wardItems.map((w) => (
+                                    <option key={String(w.code)} value={String(w.code)}>{w.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        className="parking-filters-clear"
+                        onClick={() => {
+                            setFilters({ provinceCode: '', wardCode: '' });
+                            setPagination(p => ({ ...p, page: 1 }));
+                        }}
+                        disabled={!filters.provinceCode && !filters.wardCode}
+                    >
+                        Xóa lọc
+                    </button>
+                </div>
+
                 <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>{statusTab === TAB_PENDING ? 'Bãi xe chờ duyệt' : 'Tất cả bãi đỗ xe'}</h2>
                     <button className="primary-btn" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

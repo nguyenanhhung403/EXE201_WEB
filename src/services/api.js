@@ -97,9 +97,13 @@ const api = {
             const response = await axiosInstance.get(`/admin/users?${params}`);
             return response.data.data || response.data;
         },
-        getParkingLots: async (page = 1, pageSize = 20, status = '') => {
+        getParkingLots: async (page = 1, pageSize = 20, filters = {}) => {
             const params = new URLSearchParams({ page, pageSize });
-            if (status) params.append('status', status);
+            if (filters.status) params.append('status', filters.status);
+            if (filters.provinceCode != null && filters.provinceCode !== '') params.append('provinceCode', filters.provinceCode);
+            if (filters.wardCode != null && filters.wardCode !== '') params.append('wardCode', filters.wardCode);
+            if (filters.province) params.append('province', filters.province);
+            if (filters.ward) params.append('ward', filters.ward);
             const response = await axiosInstance.get(`/admin/parking-lots?${params}`);
             return response.data.data || response.data;
         },
