@@ -78,7 +78,7 @@ const Hero = () => {
 
                     <div className="hero-buttons">
                         <a
-                            href="https://expo.dev/accounts/truongduyyyy/projects/bai-giu-xe-thong-minh/builds/dc546f52-113e-43e4-b956-64d934d7ca19"
+                            href="https://apkpure.com/p/com.truongduyyyy.baigiuxethongminh"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn btn-primary-glow icon-btn"
