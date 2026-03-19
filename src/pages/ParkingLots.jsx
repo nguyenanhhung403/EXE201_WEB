@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { MapPin, Car, DollarSign, Plus, Pencil, Trash2, Power, X, Loader, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import { getParkingLotImage } from '../utils/images';
@@ -17,7 +18,6 @@ const ParkingLots = () => {
     const [fetchError, setFetchError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null);
-    const [message, setMessage] = useState({ type: '', text: '' });
     const [editModal, setEditModal] = useState(null);
     const [editForm, setEditForm] = useState({ name: '', address: '', totalCapacity: '', pricePerHour: '', imageUrl: '', isActive: true });
     const [editSaving, setEditSaving] = useState(false);
@@ -84,21 +84,16 @@ const ParkingLots = () => {
         }
     }, [pagination.pageSize, statusTab, filters.provinceCode, filters.wardCode, provinces]);
 
-    const showMessage = (type, text) => {
-        setMessage({ type, text });
-        setTimeout(() => setMessage({ type: '', text: '' }), 4000);
-    };
-
     const handleDelete = async (lot) => {
         if (!confirm(`Bạn có chắc muốn xóa bãi xe "${lot.name}"? Hành động không thể hoàn tác.`)) return;
         setActionLoading(lot.parkingLotId);
         try {
             await api.admin.deleteParkingLot(lot.parkingLotId);
-            showMessage('success', 'Đã xóa bãi xe thành công');
+            toast.success('Đã xóa bãi xe thành công');
             fetchParkingLots(pagination.page);
         } catch (err) {
             const msg = err?.response?.data?.message || err?.message || 'Không thể xóa bãi xe';
-            showMessage('error', msg);
+            toast.error(msg);
         } finally {
             setActionLoading(null);
         }
@@ -110,10 +105,10 @@ const ParkingLots = () => {
             const res = await api.admin.toggleActiveParkingLot(lot.parkingLotId);
             const updated = res?.data ?? res;
             setParkingLots(prev => prev.map(p => p.parkingLotId === lot.parkingLotId ? { ...p, ...updated } : p));
-            showMessage('success', updated?.isActive ? 'Bãi xe đã được kích hoạt' : 'Bãi xe đã tạm dừng');
+            toast.success(updated?.isActive ? 'Bãi xe đã được kích hoạt' : 'Bãi xe đã tạm dừng');
         } catch (err) {
             const msg = err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái';
-            showMessage('error', msg);
+            toast.error(msg);
         } finally {
             setActionLoading(null);
         }
@@ -124,11 +119,11 @@ const ParkingLots = () => {
         setActionLoading(lot.parkingLotId);
         try {
             await api.admin.approveParkingLot(lot.parkingLotId);
-            showMessage('success', 'Đã duyệt bãi xe thành công');
+            toast.success('Đã duyệt bãi xe thành công');
             fetchParkingLots(pagination.page);
         } catch (err) {
             const msg = err?.response?.data?.message || err?.message || 'Không thể duyệt bãi xe';
-            showMessage('error', msg);
+            toast.error(msg);
         } finally {
             setActionLoading(null);
         }
@@ -152,11 +147,11 @@ const ParkingLots = () => {
         const cap = parseInt(editForm.totalCapacity, 10);
         const price = parseFloat(editForm.pricePerHour);
         if (isNaN(cap) || cap < 1 || cap > 10000) {
-            alert('Sức chứa phải từ 1 đến 10000');
+            toast.error('Sức chứa phải từ 1 đến 10000');
             return;
         }
         if (isNaN(price) || price < 0) {
-            alert('Giá/giờ phải lớn hơn 0');
+            toast.error('Giá/giờ phải lớn hơn 0');
             return;
         }
         setEditSaving(true);
@@ -169,12 +164,12 @@ const ParkingLots = () => {
                 isActive: editForm.isActive,
                 imageUrl: editForm.imageUrl?.trim() || null
             });
-            showMessage('success', 'Đã cập nhật bãi xe thành công');
+            toast.success('Đã cập nhật bãi xe thành công');
             setEditModal(null);
             fetchParkingLots(pagination.page);
         } catch (err) {
             const msg = err?.response?.data?.message || err?.message || 'Cập nhật thất bại';
-            alert(msg);
+            toast.error(msg);
         } finally {
             setEditSaving(false);
         }
@@ -249,18 +244,6 @@ const ParkingLots = () => {
                         <Plus size={18} /> Thêm bãi xe
                     </button>
                 </div>
-
-                {message.text && (
-                    <div style={{
-                        padding: '12px 16px',
-                        borderRadius: '8px',
-                        marginBottom: '16px',
-                        background: message.type === 'success' ? '#ecfdf5' : '#fef2f2',
-                        color: message.type === 'success' ? '#059669' : '#dc2626'
-                    }}>
-                        {message.text}
-                    </div>
-                )}
 
                 {loading ? (
                     <div className="admin-loading" style={{ height: '300px' }}>

@@ -32,8 +32,11 @@ const Login = () => {
         try {
             const response = await api.auth.login(formData);
 
-            // Save tokens
+            // Save tokens and user (for role guard)
             api.auth.saveTokens(response.accessToken, response.refreshToken);
+            if (response.user) {
+                api.auth.saveUser({ ...response.user, role: response.user.role || response.user.roleName });
+            }
 
             setSuccess('Đăng nhập thành công! Đang chuyển hướng...');
             setTimeout(() => {
