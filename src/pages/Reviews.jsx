@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { MessageSquare, Trash2, Search, Filter, Star } from 'lucide-react';
 import api from '../services/api';
 import { formatDateTime } from '../utils/helpers';
@@ -57,10 +58,10 @@ const Reviews = () => {
         try {
             await api.admin.deleteReview(id);
             fetchReviews();
-            alert('Đã xóa đánh giá thành công');
+            toast.success('Đã xóa đánh giá thành công');
         } catch (error) {
             const msg = error?.response?.data?.message || error?.message || 'Có lỗi xảy ra khi xóa đánh giá';
-            alert(msg);
+            toast.error(msg);
         } finally {
             setDeleteLoading(null);
         }

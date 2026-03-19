@@ -2,40 +2,63 @@ import axios from 'axios';
 
 const API_URL = (import.meta.env.VITE_APP_API_URL || 'https://smartparkingexe.azurewebsites.net') + '/api';
 
+// Web: httpOnly cookie (bảo mật, chống XSS). Mobile: Bearer token. Set false cho local dev http.
+const USE_COOKIE_AUTH = import.meta.env.VITE_USE_COOKIE_AUTH !== 'false';
+
 const axiosInstance = axios.create({
     baseURL: API_URL,
+    withCredentials: USE_COOKIE_AUTH, // Gửi cookie khi dùng httpOnly
     headers: {
         'Content-Type': 'application/json',
+        ...(USE_COOKIE_AUTH && { 'X-Use-Cookies': 'true' }),
     },
 });
 
-// Request interceptor for API calls
+// Request interceptor: Bearer (Mobile) hoặc cookie tự gửi (Web)
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        if (!USE_COOKIE_AUTH) {
+            const token = localStorage.getItem('accessToken');
+            if (token) config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle common errors (like 401)
+// Response interceptor: xử lý 401 + refresh, redirect
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     async (error) => {
-        // const originalRequest = error.config;
+        const originalRequest = error.config;
+        if (error.response?.status !== 401 || originalRequest._retry) {
+            return Promise.reject(error);
+        }
+        const skipRefresh = ['/auth/login', '/auth/refresh'].some((p) => originalRequest.url?.includes(p));
+        if (skipRefresh) return Promise.reject(error);
 
-        // TODO: Handle token refresh logic here if needed
-        // For now, if 401, maybe redirect to login or clear tokens
-        if (error.response && error.response.status === 401) {
-            // localStorage.clear();
-            // window.location.href = '/login';
+        originalRequest._retry = true;
+        try {
+            if (USE_COOKIE_AUTH) {
+                await axiosInstance.post('/auth/refresh', {}, { withCredentials: true });
+            } else {
+                const refreshToken = localStorage.getItem('refreshToken');
+                if (!refreshToken) throw new Error('No refresh');
+                const res = await axios.post(
+                    API_URL.replace('/api', '') + '/api/auth/refresh',
+                    { refreshToken },
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+                const data = res.data?.data ?? res.data;
+                if (data?.accessToken) localStorage.setItem('accessToken', data.accessToken);
+            }
+            originalRequest.headers.Authorization = USE_COOKIE_AUTH
+                ? undefined
+                : `Bearer ${localStorage.getItem('accessToken')}`;
+            return axiosInstance(originalRequest);
+        } catch {
+            api.auth.clearTokens();
+            if (typeof window !== 'undefined') window.location.href = '/login';
         }
         return Promise.reject(error);
     }
@@ -54,21 +77,50 @@ const api = {
             return response.data.data;
         },
         saveTokens: (accessToken, refreshToken) => {
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
+            if (!USE_COOKIE_AUTH) {
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
+            }
         },
         clearTokens: () => {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            if (USE_COOKIE_AUTH) {
+                axiosInstance.post('/auth/logout-cookies').catch(() => {});
+            }
         },
-        getToken: () => localStorage.getItem('accessToken'),
-        isAuthenticated: () => !!localStorage.getItem('accessToken'),
+        saveUser: (user) => {
+            if (user) localStorage.setItem('user', JSON.stringify(user));
+        },
+        getToken: () => USE_COOKIE_AUTH ? null : localStorage.getItem('accessToken'),
+        isAuthenticated: () => USE_COOKIE_AUTH ? !!api.auth.getUser() : !!localStorage.getItem('accessToken'),
         getUser: () => {
-            // If user info is stored in local storage, return it. 
-            // Login.jsx strictly saves tokens. It doesn't seem to save User object strictly, 
-            // but we might want to if we want to display name.
-            // For now, simple check.
-            return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+            try {
+                return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+            } catch {
+                return null;
+            }
+        },
+        isAdmin: () => {
+            const user = api.auth.getUser();
+            return user?.role === 'Admin' || user?.roleName === 'Admin';
+        },
+        getProfile: async () => {
+            const response = await axiosInstance.get('/users/profile');
+            const data = response.data?.data ?? response.data;
+            return data;
+        },
+        refreshToken: async () => {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (!refreshToken) return null;
+            const response = await axios.post(
+                (import.meta.env.VITE_APP_API_URL || 'https://smartparkingexe.azurewebsites.net') + '/api/auth/refresh',
+                { refreshToken },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const data = response.data?.data ?? response.data;
+            return data;
         }
     },
     admin: {

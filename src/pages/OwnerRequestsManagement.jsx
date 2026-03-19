@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { CheckCircle, XCircle, MapPin } from 'lucide-react';
 import api from '../services/api';
 import { formatDateTime } from '../utils/helpers';
@@ -70,12 +71,12 @@ const OwnerRequestsManagement = () => {
         setActionLoading(true);
         try {
             await api.admin.approveOwnerRequest(requestId);
-            alert('Đã duyệt thành công!');
+            toast.success('Đã duyệt thành công!');
             fetchRequests();
         } catch (error) {
             console.error('Approve error:', error);
             const msg = error.response?.data?.message ?? error.message ?? 'Có lỗi xảy ra khi duyệt yêu cầu';
-            alert(msg);
+            toast.error(msg);
         } finally {
             setActionLoading(false);
         }
@@ -83,14 +84,14 @@ const OwnerRequestsManagement = () => {
 
     const handleReject = async () => {
         if (!rejectReason.trim()) {
-            alert('Vui lòng nhập lý do từ chối');
+            toast.error('Vui lòng nhập lý do từ chối');
             return;
         }
 
         setActionLoading(true);
         try {
             await api.admin.rejectOwnerRequest(selectedRequest.requestId, rejectReason);
-            alert('Đã từ chối yêu cầu');
+            toast.success('Đã từ chối yêu cầu');
             setShowRejectModal(false);
             setRejectReason('');
             setSelectedRequest(null);
@@ -98,7 +99,7 @@ const OwnerRequestsManagement = () => {
         } catch (error) {
             console.error('Reject error:', error);
             const msg = error.response?.data?.message ?? error.message ?? 'Có lỗi xảy ra khi từ chối yêu cầu';
-            alert(msg);
+            toast.error(msg);
         } finally {
             setActionLoading(false);
         }

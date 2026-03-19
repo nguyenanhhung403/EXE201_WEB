@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { BadgeDollarSign, Search, RefreshCw, AlertCircle } from 'lucide-react';
 import api from '../services/api';
 import { formatDateTime } from '../utils/helpers';
@@ -49,18 +50,18 @@ const Transactions = () => {
 
     const handleRefund = async () => {
         if (!refundReason) {
-            alert('Vui lòng nhập lý do hoàn tiền');
+            toast.error('Vui lòng nhập lý do hoàn tiền');
             return;
         }
         setActionLoading(true);
         try {
             await api.admin.processRefund(refundModal.transactionId, refundReason, refundModal.amount);
-            alert('Hoàn tiền thành công');
+            toast.success('Hoàn tiền thành công');
             setRefundModal({ show: false, transactionId: null, amount: 0 });
             fetchTransactions();
         } catch (error) {
             console.error('Refund error:', error);
-            alert('Có lỗi khi xử lý hoàn tiền');
+            toast.error('Có lỗi khi xử lý hoàn tiền');
         } finally {
             setActionLoading(false);
         }

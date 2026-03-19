@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { User, Mail, Phone, Lock, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import logo from '../assets/logo.png';
@@ -95,7 +96,7 @@ const Register = () => {
             await api.auth.resendOtp({
                 phoneNumber: formData.phoneNumber
             });
-            alert('Mã OTP mới đã được gửi!');
+            toast.success('Mã OTP mới đã được gửi!');
         } catch (err) {
             setError(err.message || 'Không thể gửi lại OTP. Vui lòng thử lại.');
         }
