@@ -12,8 +12,9 @@ const ProtectedAdminRoute = ({ children }) => {
     const [status, setStatus] = useState('checking'); // checking | allowed | redirect_login | redirect_home
 
     useEffect(() => {
-        const token = api.auth.getToken();
-        if (!token) {
+        // Cookie auth: getToken() trả về null; dùng isAuthenticated (kiểm tra getUser)
+        const authenticated = api.auth.isAuthenticated();
+        if (!authenticated) {
             setStatus('redirect_login');
             return;
         }
@@ -25,7 +26,7 @@ const ProtectedAdminRoute = ({ children }) => {
             return;
         }
 
-        // Có token nhưng không có user/role (vd: refresh trang)
+        // Có auth nhưng không có user/role (vd: refresh trang)
         if (!user) {
             let mounted = true;
             api.auth.getProfile?.()
