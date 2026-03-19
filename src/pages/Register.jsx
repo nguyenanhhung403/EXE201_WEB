@@ -127,6 +127,8 @@ const Register = () => {
                                 placeholder="Nhập 6 số OTP"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
+                                onInvalid={(e) => e.target.setCustomValidity(e.target.validity.valueMissing ? 'Vui lòng nhập mã OTP' : '')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 maxLength="6"
                                 required
                                 className="otp-input"
@@ -194,6 +196,8 @@ const Register = () => {
                                 placeholder="Nguyễn Văn An"
                                 value={formData.fullName}
                                 onChange={handleChange}
+                                onInvalid={(e) => e.target.setCustomValidity(e.target.validity.valueMissing ? 'Vui lòng điền trường này' : '')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 required
                             />
                         </div>
@@ -210,6 +214,8 @@ const Register = () => {
                                     placeholder="example@email.com"
                                     value={formData.email}
                                     onChange={handleChange}
+                                    onInvalid={(e) => e.target.setCustomValidity(e.target.validity.valueMissing ? 'Vui lòng điền trường này' : '')}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                 />
                             </div>
@@ -225,6 +231,8 @@ const Register = () => {
                                     placeholder="0901234567"
                                     value={formData.phoneNumber}
                                     onChange={handleChange}
+                                    onInvalid={(e) => e.target.setCustomValidity(e.target.validity.valueMissing ? 'Vui lòng điền trường này' : '')}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                 />
                             </div>
@@ -256,6 +264,11 @@ const Register = () => {
                                     placeholder="Tối thiểu 8 ký tự"
                                     value={formData.password}
                                     onChange={handleChange}
+                                    onInvalid={(e) => {
+                                        const el = e.target;
+                                        el.setCustomValidity(el.validity.valueMissing ? 'Vui lòng điền trường này' : el.validity.tooShort ? 'Mật khẩu phải có ít nhất 8 ký tự' : '');
+                                    }}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                     minLength="8"
                                 />
@@ -272,6 +285,8 @@ const Register = () => {
                                     placeholder="Nhập lại mật khẩu"
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
+                                    onInvalid={(e) => e.target.setCustomValidity(e.target.validity.valueMissing ? 'Vui lòng điền trường này' : '')}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                 />
                             </div>
@@ -280,7 +295,12 @@ const Register = () => {
 
                     <div className="form-group">
                         <label className="checkbox-label">
-                            <input type="checkbox" required />
+                            <input
+                                type="checkbox"
+                                onInvalid={(e) => e.target.setCustomValidity('Vui lòng chấp nhận điều khoản để tiếp tục')}
+                                onInput={(e) => e.target.setCustomValidity('')}
+                                required
+                            />
                             <span>
                                 Tôi đồng ý với <Link to="/terms">Điều khoản dịch vụ</Link> và{' '}
                                 <Link to="/privacy">Chính sách bảo mật</Link>

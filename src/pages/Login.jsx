@@ -88,6 +88,8 @@ const Login = () => {
                                 placeholder="nguyenvanan@email.com hoặc 0901234567"
                                 value={formData.identifier}
                                 onChange={handleChange}
+                                onInvalid={(e) => e.target.setCustomValidity('Vui lòng điền trường này')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 required
                             />
                         </div>
@@ -103,6 +105,8 @@ const Login = () => {
                                 placeholder="Nhập mật khẩu"
                                 value={formData.password}
                                 onChange={handleChange}
+                                onInvalid={(e) => e.target.setCustomValidity('Vui lòng điền trường này')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 required
                             />
                         </div>

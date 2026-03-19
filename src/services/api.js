@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
                 await axiosInstance.post('/auth/refresh', {}, { withCredentials: true });
             } else {
                 const refreshToken = localStorage.getItem('refreshToken');
-                if (!refreshToken) throw new Error('No refresh');
+                if (!refreshToken) throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
                 const res = await axios.post(
                     API_URL.replace('/api', '') + '/api/auth/refresh',
                     { refreshToken },

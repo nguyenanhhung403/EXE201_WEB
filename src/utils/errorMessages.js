@@ -6,6 +6,7 @@ const API_ERROR_MAP = {
     'Invalid response': 'Phản hồi không hợp lệ',
     'Network error': 'Lỗi kết nối mạng',
     'No parking lots found': 'Không tìm thấy bãi xe nào',
+    'No refresh': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
 };
 
 export const translateApiError = (msg) => {
