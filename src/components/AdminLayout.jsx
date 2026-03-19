@@ -57,6 +57,10 @@ const AdminLayout = ({ children, title, subtitle }) => {
                         <Wallet size={20} />
                         <span>Ví Admin</span>
                     </Link>
+                    <Link to="/admin/reports" className={`nav-item ${isActive('/admin/reports')}`}>
+                        <BarChart size={20} />
+                        <span>Báo cáo</span>
+                    </Link>
                 </nav>
                 <div className="sidebar-footer">
                     <button onClick={handleLogout} className="logout-btn">
