@@ -12,7 +12,6 @@ const ProtectedAdminRoute = ({ children }) => {
     const [status, setStatus] = useState('checking'); // checking | allowed | redirect_login | redirect_home
 
     useEffect(() => {
-        // Cookie auth: getToken() trả về null; dùng isAuthenticated (kiểm tra getUser)
         const authenticated = api.auth.isAuthenticated();
         if (!authenticated) {
             setStatus('redirect_login');
