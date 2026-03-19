@@ -264,6 +264,14 @@ const api = {
             const params = new URLSearchParams({ fromDate, toDate });
             const response = await axiosInstance.get(`/admin/reports/bookings?${params}`);
             return response.data.data || response.data;
+        },
+        getWalletBalance: async () => {
+            const response = await axiosInstance.get('/admin/wallet/balance');
+            return response.data.data || response.data;
+        },
+        getWalletTransactions: async (page = 1, pageSize = 20) => {
+            const response = await axiosInstance.get(`/admin/wallet/transactions?page=${page}&pageSize=${pageSize}`);
+            return response.data.data || response.data;
         }
     }
 };
