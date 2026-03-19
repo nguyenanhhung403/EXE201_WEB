@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Users, MapPin, Calendar, LogOut, Activity, MessageSquare, Menu, Receipt, BarChart } from 'lucide-react';
+import { Users, MapPin, Calendar, LogOut, Activity, MessageSquare, Menu, Receipt, BarChart, Wallet } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
 
@@ -52,6 +52,10 @@ const AdminLayout = ({ children, title, subtitle }) => {
                     <Link to="/admin/transactions" className={`nav-item ${isActive('/admin/transactions')}`}>
                         <Receipt size={20} />
                         <span>Giao dịch</span>
+                    </Link>
+                    <Link to="/admin/wallet" className={`nav-item ${isActive('/admin/wallet')}`}>
+                        <Wallet size={20} />
+                        <span>Ví Admin</span>
                     </Link>
                 </nav>
                 <div className="sidebar-footer">
