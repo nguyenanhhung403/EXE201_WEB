@@ -118,6 +118,8 @@ const ForgotPassword = () => {
                                 placeholder="Nhập 6 số OTP"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
+                                onInvalid={(e) => e.target.setCustomValidity('Vui lòng nhập mã OTP')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 maxLength="6"
                                 required
                                 className="otp-input"
@@ -133,6 +135,11 @@ const ForgotPassword = () => {
                                     placeholder="Tối thiểu 8 ký tự"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
+                                    onInvalid={(e) => {
+                                        const el = e.target;
+                                        el.setCustomValidity(el.validity.valueMissing ? 'Vui lòng điền trường này' : el.validity.tooShort ? 'Mật khẩu phải có ít nhất 8 ký tự' : '');
+                                    }}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                     minLength="8"
                                 />
@@ -148,6 +155,8 @@ const ForgotPassword = () => {
                                     placeholder="Nhập lại mật khẩu"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onInvalid={(e) => e.target.setCustomValidity('Vui lòng điền trường này')}
+                                    onInput={(e) => e.target.setCustomValidity('')}
                                     required
                                 />
                             </div>
@@ -220,6 +229,8 @@ const ForgotPassword = () => {
                                 placeholder="example@email.com hoặc 0901234567"
                                 value={identifier}
                                 onChange={(e) => setIdentifier(e.target.value)}
+                                onInvalid={(e) => e.target.setCustomValidity('Vui lòng nhập email hoặc số điện thoại')}
+                                onInput={(e) => e.target.setCustomValidity('')}
                                 required
                             />
                         </div>

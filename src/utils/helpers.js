@@ -14,7 +14,7 @@ export const formatDateTime = (dateString) => {
             minute: '2-digit'
         });
     } catch {
-        return 'Invalid Date';
+        return 'Ngày không hợp lệ';
     }
 };
 
@@ -27,7 +27,7 @@ export const formatDate = (dateString, simple = false) => {
             : { timeZone: VIETNAM_TZ, year: 'numeric', month: '2-digit', day: '2-digit' };
         return date.toLocaleDateString('vi-VN', options);
     } catch {
-        return 'Invalid Date';
+        return 'Ngày không hợp lệ';
     }
 };
 
@@ -43,6 +43,6 @@ export const formatDateShort = (dateString) => {
             month: '2-digit'
         });
     } catch {
-        return 'Invalid Date';
+        return 'Ngày không hợp lệ';
     }
 };
