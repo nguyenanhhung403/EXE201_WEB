@@ -24,6 +24,7 @@ import OwnerRequestsManagement from './pages/OwnerRequestsManagement';
 import Reviews from './pages/Reviews';
 import Transactions from './pages/Transactions';
 import AdminWallet from './pages/AdminWallet';
+import Reports from './pages/Reports';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/admin/reviews" element={<ProtectedAdminRoute><Reviews /></ProtectedAdminRoute>} />
           <Route path="/admin/transactions" element={<ProtectedAdminRoute><Transactions /></ProtectedAdminRoute>} />
           <Route path="/admin/wallet" element={<ProtectedAdminRoute><AdminWallet /></ProtectedAdminRoute>} />
+          <Route path="/admin/reports" element={<ProtectedAdminRoute><Reports /></ProtectedAdminRoute>} />
         </Routes>
       </Router>
     </HelmetProvider>
