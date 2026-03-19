@@ -2,31 +2,20 @@ import axios from 'axios';
 
 const API_URL = (import.meta.env.VITE_APP_API_URL || 'https://smartparkingexe.azurewebsites.net') + '/api';
 
-// Web: httpOnly cookie (bảo mật, chống XSS). Mobile: Bearer token. Set false cho local dev http.
-const USE_COOKIE_AUTH = import.meta.env.VITE_USE_COOKIE_AUTH !== 'false';
-
 const axiosInstance = axios.create({
     baseURL: API_URL,
-    withCredentials: USE_COOKIE_AUTH, // Gửi cookie khi dùng httpOnly
-    headers: {
-        'Content-Type': 'application/json',
-        ...(USE_COOKIE_AUTH && { 'X-Use-Cookies': 'true' }),
-    },
+    headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor: Bearer (Mobile) hoặc cookie tự gửi (Web)
 axiosInstance.interceptors.request.use(
     (config) => {
-        if (!USE_COOKIE_AUTH) {
-            const token = localStorage.getItem('accessToken');
-            if (token) config.headers.Authorization = `Bearer ${token}`;
-        }
+        const token = localStorage.getItem('accessToken');
+        if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// Response interceptor: xử lý 401 + refresh, redirect
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -39,22 +28,17 @@ axiosInstance.interceptors.response.use(
 
         originalRequest._retry = true;
         try {
-            if (USE_COOKIE_AUTH) {
-                await axiosInstance.post('/auth/refresh', {}, { withCredentials: true });
-            } else {
-                const refreshToken = localStorage.getItem('refreshToken');
-                if (!refreshToken) throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-                const res = await axios.post(
-                    API_URL.replace('/api', '') + '/api/auth/refresh',
-                    { refreshToken },
-                    { headers: { 'Content-Type': 'application/json' } }
-                );
-                const data = res.data?.data ?? res.data;
-                if (data?.accessToken) localStorage.setItem('accessToken', data.accessToken);
-            }
-            originalRequest.headers.Authorization = USE_COOKIE_AUTH
-                ? undefined
-                : `Bearer ${localStorage.getItem('accessToken')}`;
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (!refreshToken) throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            const res = await axios.post(
+                API_URL.replace('/api', '') + '/api/auth/refresh',
+                { refreshToken },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const data = res.data?.data ?? res.data;
+            if (data?.accessToken) localStorage.setItem('accessToken', data.accessToken);
+            if (data?.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+            originalRequest.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
             return axiosInstance(originalRequest);
         } catch {
             api.auth.clearTokens();
@@ -77,24 +61,19 @@ const api = {
             return response.data.data;
         },
         saveTokens: (accessToken, refreshToken) => {
-            if (!USE_COOKIE_AUTH) {
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
-            }
+            if (accessToken) localStorage.setItem('accessToken', accessToken);
+            if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
         },
         clearTokens: () => {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
-            if (USE_COOKIE_AUTH) {
-                axiosInstance.post('/auth/logout-cookies').catch(() => {});
-            }
         },
         saveUser: (user) => {
             if (user) localStorage.setItem('user', JSON.stringify(user));
         },
-        getToken: () => USE_COOKIE_AUTH ? null : localStorage.getItem('accessToken'),
-        isAuthenticated: () => USE_COOKIE_AUTH ? !!api.auth.getUser() : !!localStorage.getItem('accessToken'),
+        getToken: () => localStorage.getItem('accessToken'),
+        isAuthenticated: () => !!localStorage.getItem('accessToken'),
         getUser: () => {
             try {
                 return localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
