@@ -272,6 +272,52 @@ const api = {
         getWalletTransactions: async (page = 1, pageSize = 20) => {
             const response = await axiosInstance.get(`/admin/wallet/transactions?page=${page}&pageSize=${pageSize}`);
             return response.data.data || response.data;
+        },
+        // Notifications
+        sendNotification: async (data) => {
+            const response = await axiosInstance.post('/admin/notifications/send', data);
+            return response.data;
+        },
+        broadcastNotification: async (data) => {
+            const response = await axiosInstance.post('/admin/notifications/broadcast', data);
+            return response.data;
+        },
+        // Settings
+        getSettings: async () => {
+            const response = await axiosInstance.get('/admin/settings');
+            return response.data.data || response.data;
+        },
+        updateSettings: async (data) => {
+            const response = await axiosInstance.put('/admin/settings', data);
+            return response.data.data || response.data;
+        },
+        // Vehicles
+        getVehiclesByUser: async (userId) => {
+            const response = await axiosInstance.get(`/admin/vehicles/user/${userId}`);
+            return response.data.data || response.data;
+        },
+        deleteVehicle: async (id) => {
+            const response = await axiosInstance.delete(`/admin/vehicles/${id}`);
+            return response.data;
+        },
+        // Owner Bank Accounts
+        getOwnerBankAccounts: async (ownerId) => {
+            const response = await axiosInstance.get(`/admin/owners/${ownerId}/bank-accounts`);
+            return response.data.data || response.data;
+        },
+        // Parking Locations
+        getParkingLocations: async (page = 1, pageSize = 20, filters = {}) => {
+            const params = new URLSearchParams({ page, pageSize, ...filters });
+            const response = await axiosInstance.get(`/admin/locations?${params}`);
+            return response.data.data || response.data;
+        },
+        updateParkingLocation: async (id, data) => {
+            const response = await axiosInstance.put(`/admin/locations/${id}`, data);
+            return response.data;
+        },
+        deleteParkingLocation: async (id) => {
+            const response = await axiosInstance.delete(`/admin/locations/${id}`);
+            return response.data;
         }
     }
 };

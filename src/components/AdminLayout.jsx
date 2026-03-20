@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Users, MapPin, Calendar, LogOut, Activity, MessageSquare, Menu, Receipt, BarChart, Wallet } from 'lucide-react';
+import { Users, MapPin, Calendar, LogOut, Activity, MessageSquare, Menu, Receipt, BarChart, Wallet, Bell, Settings, Car, CreditCard, Navigation } from 'lucide-react';
 import api from '../services/api';
 import '../styles/Admin.css';
 
@@ -60,6 +60,26 @@ const AdminLayout = ({ children, title, subtitle }) => {
                     <Link to="/admin/reports" className={`nav-item ${isActive('/admin/reports')}`}>
                         <BarChart size={20} />
                         <span>Báo cáo</span>
+                    </Link>
+                    <Link to="/admin/vehicles" className={`nav-item ${isActive('/admin/vehicles')}`}>
+                        <Car size={20} />
+                        <span>Phương tiện</span>
+                    </Link>
+                    <Link to="/admin/bank-accounts" className={`nav-item ${isActive('/admin/bank-accounts')}`}>
+                        <CreditCard size={20} />
+                        <span>Tài khoản NH</span>
+                    </Link>
+                    <Link to="/admin/locations" className={`nav-item ${isActive('/admin/locations')}`}>
+                        <Navigation size={20} />
+                        <span>Vị trí bãi xe</span>
+                    </Link>
+                    <Link to="/admin/notifications" className={`nav-item ${isActive('/admin/notifications')}`}>
+                        <Bell size={20} />
+                        <span>Thông báo</span>
+                    </Link>
+                    <Link to="/admin/settings" className={`nav-item ${isActive('/admin/settings')}`}>
+                        <Settings size={20} />
+                        <span>Cài đặt</span>
                     </Link>
                 </nav>
                 <div className="sidebar-footer">
