@@ -25,6 +25,11 @@ import Reviews from './pages/Reviews';
 import Transactions from './pages/Transactions';
 import AdminWallet from './pages/AdminWallet';
 import Reports from './pages/Reports';
+import AdminNotifications from './pages/AdminNotifications';
+import AdminSettings from './pages/AdminSettings';
+import AdminVehicles from './pages/AdminVehicles';
+import AdminBankAccounts from './pages/AdminBankAccounts';
+import AdminLocations from './pages/AdminLocations';
 
 function App() {
   return (
@@ -50,6 +55,11 @@ function App() {
           <Route path="/admin/transactions" element={<ProtectedAdminRoute><Transactions /></ProtectedAdminRoute>} />
           <Route path="/admin/wallet" element={<ProtectedAdminRoute><AdminWallet /></ProtectedAdminRoute>} />
           <Route path="/admin/reports" element={<ProtectedAdminRoute><Reports /></ProtectedAdminRoute>} />
+          <Route path="/admin/notifications" element={<ProtectedAdminRoute><AdminNotifications /></ProtectedAdminRoute>} />
+          <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>} />
+          <Route path="/admin/vehicles" element={<ProtectedAdminRoute><AdminVehicles /></ProtectedAdminRoute>} />
+          <Route path="/admin/bank-accounts" element={<ProtectedAdminRoute><AdminBankAccounts /></ProtectedAdminRoute>} />
+          <Route path="/admin/locations" element={<ProtectedAdminRoute><AdminLocations /></ProtectedAdminRoute>} />
         </Routes>
       </Router>
     </HelmetProvider>
