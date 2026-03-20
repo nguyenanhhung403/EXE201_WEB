@@ -305,6 +305,10 @@ const api = {
             const response = await axiosInstance.get(`/admin/owners/${ownerId}/bank-accounts`);
             return response.data.data || response.data;
         },
+        verifyBankAccount: async (id) => {
+            const response = await axiosInstance.post(`/admin/owners/bank-accounts/${id}/verify`);
+            return response.data.data || response.data;
+        },
         // Parking Locations
         getParkingLocations: async (page = 1, pageSize = 20, filters = {}) => {
             const params = new URLSearchParams({ page, pageSize, ...filters });
