@@ -84,7 +84,15 @@ const Admin = () => {
                     },
                     revenue: {
                         // Doanh thu admin = commission từ upgrade owner + 10% phí bãi tháng/năm
-                        totalRevenue: revenueRes?.totalCommission ?? revenueRes?.totalRevenue ?? 0,
+                        totalRevenue: typeof revenueRes === 'number' ? revenueRes : (
+                            revenueRes?.totalCommission ?? 
+                            revenueRes?.totalRevenue ?? 
+                            revenueRes?.revenue ?? 
+                            revenueRes?.todayRevenue ?? 
+                            revenueRes?.amount ?? 
+                            revenueRes?.TotalCommission ?? 
+                            revenueRes?.TotalRevenue ?? 0
+                        ),
                         method: 'All'
                     },
                     bookings: {
